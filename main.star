@@ -1,3 +1,7 @@
+rootchain = import_module("./src/rootchain.star")
+heimdall = import_module("./src/heimdall.star")
+
+
 def run(plan):
-    # TODO
-    plan.print("hello world!")
+    rootchain.run(plan)
+    heimdall.run(plan)
