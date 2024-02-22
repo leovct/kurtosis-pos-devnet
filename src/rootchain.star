@@ -1,6 +1,4 @@
-IMAGE = "trufflesuite/ganache"
-TAG = "v7.9.2"
-
+IMAGE = "trufflesuite/ganache:v7.9.2"
 CHAIN_ID = 1
 HARDFORK = "shanghai"
 DATA_PATH = "/var/lib/ganache"
@@ -10,10 +8,10 @@ RPC_PORT = 8545
 
 
 def run(plan, mnemonic):
-    plan.add_service(
+    rootchain = plan.add_service(
         name="rootchain",
         config=ServiceConfig(
-            image="{}:{}".format(IMAGE, TAG),
+            image=IMAGE,
             ports={"http_rpc": PortSpec(RPC_PORT, application_protocol="http")},
             cmd=[
                 ## CHAIN
@@ -50,3 +48,4 @@ def run(plan, mnemonic):
             ],
         ),
     )
+    return "http://{}:{}".format(rootchain.ip_address, RPC_PORT)
