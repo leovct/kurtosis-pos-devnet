@@ -1,48 +1,52 @@
-ROOTCHAIN_IMAGE = "trufflesuite/ganache"
-ROOTCHAIN_TAG = "v7.9.2"
-ROOTCHAIN_HTTP_RPC_PORT = 8545
+IMAGE = "trufflesuite/ganache"
+TAG = "v7.9.2"
 
-MNEMONIC = "code code code code code code code code code code code quality"
+CHAIN_ID = 1
+HARDFORK = "shanghai"
+DATA_PATH = "/var/lib/ganache"
+MINER_COINBASE_ADDRESS = "0x85dA99c8a7C2C95964c8EfD687E95E632Fc533D6"
+NUMBER_OF_ACCOUNTS = 50
+RPC_PORT = 8545
 
 
-def run(plan):
-    # TODO: add more parameters
-    rootchain = plan.add_service(
+def run(plan, mnemonic):
+    plan.add_service(
         name="rootchain",
         config=ServiceConfig(
-            image="{0}:{1}".format(ROOTCHAIN_IMAGE, ROOTCHAIN_TAG),
-            ports={
-                "http_rpc": PortSpec(
-                    ROOTCHAIN_HTTP_RPC_PORT, application_protocol="http"
-                )
-            },
+            image="{}:{}".format(IMAGE, TAG),
+            ports={"http_rpc": PortSpec(RPC_PORT, application_protocol="http")},
             cmd=[
-                "--chain.allowUnlimitedContractSize=false",
-                "--chain.allowUnlimitedInitCodeSize=false",
-                "--chain.asyncRequestProcessing=true",
-                "--chain.chainId=1",
-                "--chain.hardfork=shanghai",
-                "--chain.vmErrorsOnRPCResponse=false",
-                "--database.dbPath=/var/lib/ganache",
-                "--logging.debug=false",
-                "--logging.quiet=false",
-                "--logging.verbose=false",
-                "--miner.blockTime=0",
-                "--miner.defaultGasPrice=0x77359400",
-                "--miner.blockGasLimit=0xb71b00",
-                "--miner.defaultTransactionGasLimit=0x15f90",
-                "--miner.difficulty=0x1",
-                "--miner.callGasLimit=0x2faf080",
+                ## CHAIN
+                # Allow unlimited contract size.
+                "--chain.allowUnlimitedContractSize=true",
+                # Allow unlimited initcode (transaction.data) sizes.
+                "--chain.allowUnlimitedInitCodeSize=true",
+                # The currently configured chain id.
+                "--chain.chainId={}".format(CHAIN_ID),
+                # Set the hardfork rules for the EVM.
+                "--chain.hardfork={}".format(HARDFORK),
+                ## DATABASE
+                # Specify a path to a directory to save the chain database.
+                "--database.dbPath={}".format(DATA_PATH),
+                ## MINER
+                # In "strict" mode a transaction's hash is returned to the caller before the
+                # transaction is included in a block.
+                # Note that blockTime must be set to zero (default value).
                 "--miner.instamine=strict",
-                "--miner.coinbase=0x85dA99c8a7C2C95964c8EfD687E95E632Fc533D6",
-                "--miner.extraData='0x706f6c79676f6e2067616e61636865'",
-                "--miner.priceBump=10",
-                "--wallet.totalAccounts=50",
-                "--wallet.mnemonic='{0}'".format(MNEMONIC),
+                # Sets the address where mining rewards will go.
+                "--miner.coinbase={}".format(MINER_COINBASE_ADDRESS),
+                ## WALLET
+                # Number of accounts to generate at startup.
+                "--wallet.totalAccounts={}".format(NUMBER_OF_ACCOUNTS),
+                # Use a specific HD wallet mnemonic to generate initial addresses.
+                "--wallet.mnemonic='{}'".format(mnemonic),
+                # The default account balance, specified in ether.
                 "--wallet.defaultBalance=10000000",
-                "--server.ws=true",
-                "--server.host='0.0.0.0'",
-                "--server.port={0}".format(ROOTCHAIN_HTTP_RPC_PORT),
+                ## SERVER
+                # The port to listen on.
+                "--server.port={}".format(RPC_PORT),
+                # Enable a websocket server.
+                "--server.ws=false",
             ],
         ),
     )
