@@ -6,6 +6,7 @@ RABBITMQ_PASSWORD = "guest"
 HEIMDALL_CHAIN_ID = "heimdall-137"
 HEIMDALL_DATA_PATH = "/var/lib/heimdall"
 
+
 def run(plan, id, rootchain_rpc_url, bor_rpc_url, mnemonic, validators_count):
     rabbitmq_node_name = "rabbitmq-{}".format(id)
     amqp_url = start_rabbitmq(plan, rabbitmq_node_name)
@@ -92,8 +93,7 @@ def start_heimdall(plan, name, config, amqp_url):
         name=name,
         config=ServiceConfig(
             image=ImageBuildSpec(
-                image_name="heimdall-bor-devnet",
-                build_context_dir=".."
+                image_name="heimdall-bor-devnet", build_context_dir=".."
             ),
             files={
                 "{}".format(HEIMDALL_DATA_PATH): config,
