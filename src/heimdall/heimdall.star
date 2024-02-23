@@ -1,4 +1,4 @@
-RABBITMQ_IMAGE = "rabbitmq:3.12-alpine"
+RABBITMQ_IMAGE = "rabbitmq:3.13-alpine"
 RABBITMQ_PORT = 5672
 RABBITMQ_USER = "guest"
 RABBITMQ_PASSWORD = "guest"
