@@ -1,9 +1,13 @@
+---
 name: ci
 
 on:
   pull_request:
   push:
     branches: [main]
+
+env:
+  PYTHON_VERSION: "3.12" # https://www.python.org/doc/versions/
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
@@ -14,23 +18,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Setup Kurtosis
+      - name: Install Kurtosis
         run: |
           echo "deb [trusted=yes] https://apt.fury.io/kurtosis-tech/ /" | sudo tee /etc/apt/sources.list.d/kurtosis.list
           sudo apt update
           sudo apt install kurtosis-cli
           kurtosis analytics disable
-
       - name: Kurtosis Lint
         run: kurtosis lint ${{ github.workspace }}
+
+      - name: Install YAML linter
+        run: pip install yamllint
+      - name: Run YAML linter
+        run: yamllint --config-file .yamllint.yml .
 
   starlark:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Kurtosis
+      - name: Install Kurtosis
         run: |
           echo "deb [trusted=yes] https://apt.fury.io/kurtosis-tech/ /" | sudo tee /etc/apt/sources.list.d/kurtosis.list
           sudo apt update
