@@ -31,6 +31,4 @@ b85244b10a92   heimdall-1   <none>                                         RUNNI
 d4150ced8806   rabbitmq-1   amqp: 5672/tcp -> amqp://127.0.0.1:64043       RUNNING
 866b3e4eee44   rabbitmq-2   amqp: 5672/tcp -> amqp://127.0.0.1:64062       RUNNING
 c00398b6daa0   rootchain    http_rpc: 8545/tcp -> http://127.0.0.1:64024   RUNNING
-
-
 ```
