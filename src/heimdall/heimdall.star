@@ -93,7 +93,7 @@ def start_heimdall(plan, name, config, amqp_url):
         name=name,
         config=ServiceConfig(
             image=ImageBuildSpec(
-                image_name="heimdall-bor-devnet", build_context_dir=".."
+                image_name="heimdall-genesis-generator", build_context_dir="."
             ),
             files={
                 "{}".format(HEIMDALL_DATA_PATH): config,
