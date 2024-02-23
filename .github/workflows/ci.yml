@@ -7,7 +7,8 @@ on:
     branches: [main]
 
 env:
-  PYTHON_VERSION: "3.12" # https://www.python.org/doc/versions/
+  PYTHON_VERSION: "3.12"      # https://www.python.org/doc/versions/
+  HADOLINT_VERSION: "2.12.0"  # https://github.com/hadolint/hadolint/releases
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
@@ -35,6 +36,13 @@ jobs:
         run: pip install yamllint
       - name: Run YAML linter
         run: yamllint --config-file .yamllint.yml .
+
+      - name: Install Dockerfile linter
+        run: |
+          sudo wget -O /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v${{ env.HADOLINT_VERSION }}/hadolint-Linux-x86_64
+          sudo chmod +x /usr/local/bin/hadolint
+      - name: Run Dockerfile linter
+        run: find . -type f -name 'Dockerfile*' | sort | xargs -I {} hadolint --config .hadolint.yml {}
 
   starlark:
     runs-on: ubuntu-latest
