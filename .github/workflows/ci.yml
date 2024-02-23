@@ -6,10 +6,6 @@ on:
   push:
     branches: [main]
 
-env:
-  PYTHON_VERSION: "3.12"      # https://www.python.org/doc/versions/
-  HADOLINT_VERSION: "2.12.0"  # https://github.com/hadolint/hadolint/releases
-
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -21,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: latest
 
       - name: Install Kurtosis
         run: |
@@ -39,10 +35,15 @@ jobs:
 
       - name: Install Dockerfile linter
         run: |
-          sudo wget -O /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v${{ env.HADOLINT_VERSION }}/hadolint-Linux-x86_64
+          sudo wget -O /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
           sudo chmod +x /usr/local/bin/hadolint
       - name: Run Dockerfile linter
         run: find . -type f -name 'Dockerfile*' | sort | xargs -I {} hadolint --config .hadolint.yml {}
+
+      - name: Install shellcheck
+        run: sudo apt install shellcheck
+      - name: Run script linter
+        run: find . -type f -name '*.sh' | sort | xargs -I {} shellcheck {}
 
   starlark:
     runs-on: ubuntu-latest
