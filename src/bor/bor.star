@@ -13,6 +13,7 @@ def generate_bor_genesis(plan, validator_keys):
                     "BOR_CHAIN_ID": "137",
                     "HEIMDALL_CHAIN_ID": "heimdall-137",
                     "VAlIDATOR_KEYS_PATH": validator_keys_path,
+                    "DATA_PATH": BOR_DATA_PATH,
                 },
             )
         },
@@ -38,7 +39,7 @@ def generate_bor_genesis(plan, validator_keys):
     )
     response = plan.wait(
         service_name="bor-genesis-generator",
-        recipe=ExecRecipe(command=["cat", "/opt/genesis-contracts/genesis.json"]),
+        recipe=ExecRecipe(command=["cat", "/tmp/done"]),
         field="code",
         assertion="==",
         target_value=0,
@@ -46,7 +47,7 @@ def generate_bor_genesis(plan, validator_keys):
     )
     return plan.store_service_files(
         service_name="bor-genesis-generator",
-        src="/opt/genesis-contracts/genesis.json",
+        src="{}/*".format(BOR_DATA_PATH),
         name="bor_genesis",
     )
 
@@ -70,7 +71,7 @@ def start_bor(plan, name, genesis, validator_keys, validator_keys_path):
             image="0xpolygon/bor:1.2.3",
             files={
                 # BOR_DATA_PATH: config,
-                "{}/genesis.json".format(BOR_DATA_PATH): genesis,
+                BOR_DATA_PATH: genesis,
                 validator_keys_path: validator_keys,
             },
             cmd=["server"],
