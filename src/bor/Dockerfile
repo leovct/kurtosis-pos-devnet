@@ -3,7 +3,7 @@ LABEL author="devtools@polygon.technology"
 LABEL description="Helper image to generate Bor genesis file"
 
 RUN wget --progress=dot:giga --output-document=/usr/bin/solc https://github.com/ethereum/solidity/releases/download/v0.5.17/solc-static-linux \
-  && chmod +x /usr/bin/solc
+  && chmod +x /usr/local/bin/solc
 
 # We try to compile as much as contracts as possible before adding any templates.
 WORKDIR /opt/genesis-contracts

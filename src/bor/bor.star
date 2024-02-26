@@ -7,13 +7,12 @@ def generate_bor_genesis(plan, validator_keys):
     initScript = plan.render_templates(
         name="bor-genesis-generator-config",
         config={
-            "scripts/init.sh": struct(
+            "init.sh": struct(
                 template=initScriptTemplate,
                 data={
                     "BOR_CHAIN_ID": "137",
                     "HEIMDALL_CHAIN_ID": "heimdall-137",
                     "VAlIDATOR_KEYS_PATH": validator_keys_path,
-                    "DATA_PATH": BOR_DATA_PATH,
                 },
             )
         },
@@ -26,15 +25,11 @@ def generate_bor_genesis(plan, validator_keys):
                 image_name="bor-genesis-generator", build_context_dir="."
             ),
             files={
-                BOR_DATA_PATH: initScript,
+                "/usr/local/bin": initScript,
                 validator_keys_path: validator_keys,
             },
             entrypoint=["/bin/sh", "-c"],
-            cmd=[
-                "chmod +x {0}/scripts/init.sh && sh {0}/scripts/init.sh".format(
-                    BOR_DATA_PATH
-                )
-            ],
+            cmd=["chmod +x /usr/local/bin/init.sh && sh /usr/local/bin/init.sh"],
         ),
     )
     response = plan.wait(
@@ -47,7 +42,7 @@ def generate_bor_genesis(plan, validator_keys):
     )
     return plan.store_service_files(
         service_name="bor-genesis-generator",
-        src="{}/config/*".format(BOR_DATA_PATH),
+        src="/var/lib/bor/*",
         name="bor_genesis",
     )
 
@@ -69,9 +64,12 @@ def start_bor(plan, name, genesis, validator_keys, validator_keys_path):
         name,
         config=ServiceConfig(
             image="0xpolygon/bor:1.2.3",
+            ports={
+                # "http_rpc": PortSpec(8545, application_protocol="http")
+            },
             files={
                 # BOR_DATA_PATH: config,
-                BOR_DATA_PATH: genesis,
+                "/opt/bor": genesis,
                 validator_keys_path: validator_keys,
             },
             cmd=["server"],
