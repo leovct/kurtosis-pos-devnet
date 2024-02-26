@@ -97,9 +97,7 @@ def start_heimdall(plan, name, config, amqp_url, validator_keys, validator_keys_
     plan.add_service(
         name=name,
         config=ServiceConfig(
-            image=ImageBuildSpec(
-                image_name="heimdall-genesis-generator", build_context_dir="."
-            ),
+            image="0xpolygon/heimdall:1.0.3",
             files={
                 HEIMDALL_DATA_PATH: config,
                 validator_keys_path: validator_keys,
