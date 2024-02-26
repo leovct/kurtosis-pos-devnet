@@ -7,11 +7,12 @@ HEIMDALL_CHAIN_ID = "heimdall-137"
 HEIMDALL_DATA_PATH = "/var/lib/heimdall"
 
 
-def run(plan, id, rootchain_rpc_url, bor_rpc_url, mnemonic, validators_count):
+def run(plan, id, validator_keys, rootchain_rpc_url, bor_rpc_url):
     rabbitmq_node_name = "rabbitmq-{}".format(id)
     amqp_url = start_rabbitmq(plan, rabbitmq_node_name)
 
     heimdall_node_name = "heimdall-{}".format(id)
+    validator_keys_path = "/var/lib/validators"
     heimdall_config = generate_heimdall_config(
         plan,
         id,
@@ -19,10 +20,9 @@ def run(plan, id, rootchain_rpc_url, bor_rpc_url, mnemonic, validators_count):
         rootchain_rpc_url,
         bor_rpc_url,
         amqp_url,
-        mnemonic,
-        validators_count,
+        validator_keys_path
     )
-    start_heimdall(plan, heimdall_node_name, heimdall_config, amqp_url)
+    start_heimdall(plan, heimdall_node_name, heimdall_config, amqp_url, validator_keys, validator_keys_path)
 
 
 def start_rabbitmq(plan, name):
@@ -45,8 +45,7 @@ def generate_heimdall_config(
     rootchain_rpc_url,
     bor_rpc_url,
     amqp_url,
-    mnemonic,
-    validators_count,
+    validator_keys_path
 ):
     appTemplate = read_file("./config/app.toml")
     configTemplate = read_file("./config/config.toml")
@@ -78,8 +77,7 @@ def generate_heimdall_config(
                 data={
                     "CHAIN_ID": HEIMDALL_CHAIN_ID,
                     "DATA_PATH": HEIMDALL_DATA_PATH,
-                    "VALIDATORS_COUNT": validators_count,
-                    "MNEMONIC": mnemonic,
+                    "VAlIDATOR_KEYS_PATH": validator_keys_path,
                     "NODE_ID": id,
                     "AMQP_URL": amqp_url,
                 },
@@ -88,7 +86,7 @@ def generate_heimdall_config(
     )
 
 
-def start_heimdall(plan, name, config, amqp_url):
+def start_heimdall(plan, name, config, amqp_url, validator_keys, validator_keys_path):
     plan.add_service(
         name=name,
         config=ServiceConfig(
@@ -96,7 +94,8 @@ def start_heimdall(plan, name, config, amqp_url):
                 image_name="heimdall-genesis-generator", build_context_dir="."
             ),
             files={
-                "{}".format(HEIMDALL_DATA_PATH): config,
+                HEIMDALL_DATA_PATH: config,
+                validator_keys_path: validator_keys,
             },
             entrypoint=["/bin/sh", "-c"],
             cmd=[

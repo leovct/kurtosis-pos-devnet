@@ -5,7 +5,7 @@
 heimdalld init --chain-id "{{.CHAIN_ID}}" --home "{{.DATA_PATH}}"
 
 # Generate the validator private key.
-polycli wallet inspect --addresses "{{.VALIDATORS_COUNT}}" --mnemonic "{{.MNEMONIC}}" | jq -r ".Addresses[{{.NODE_ID}}] | .HexPrivateKey" > "{{.DATA_PATH}}/data/private_key.txt"
+cp "{{.VAlIDATOR_KEYS_PATH}}/validator_{{.NODE_ID}}.key" "{{.DATA_PATH}}/data/private_key.txt"
 cd "{{.DATA_PATH}}/config" || exit
 heimdallcli generate-validatorkey --home . "$(cat ../data/private_key.txt)"
 
