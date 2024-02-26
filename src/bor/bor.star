@@ -47,7 +47,7 @@ def generate_bor_genesis(plan, validator_keys):
     )
     return plan.store_service_files(
         service_name="bor-genesis-generator",
-        src="{}/*".format(BOR_DATA_PATH),
+        src="{}/config/*".format(BOR_DATA_PATH),
         name="bor_genesis",
     )
 

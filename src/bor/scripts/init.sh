@@ -15,8 +15,8 @@ node generate-borvalidatorset.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-c
 
 echo; echo "Generating genesis file..."
 node generate-genesis.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"
-mkdir "$DATA_PATH"
-cp /opt/genesis-contracts/genesis.json "$DATA_PATH/genesis.json"
+mkdir "{{.DATA_PATH}}"
+cp /opt/genesis-contracts/genesis.json "{{.DATA_PATH}}/config/genesis.json"
 
 touch /tmp/done
 echo; echo "Done generating genesis file!"
