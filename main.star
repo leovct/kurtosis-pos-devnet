@@ -1,7 +1,7 @@
-helper_module = import_module("./src/helper/helper.star")
-rootchain_module = import_module("./src/rootchain.star")
-heimdall_module = import_module("./src/heimdall/heimdall.star")
 bor_module = import_module("./src/bor/bor.star")
+heimdall_module = import_module("./src/heimdall/heimdall.star")
+helper_module = import_module("./src/helper/helper.star")
+rootchain_module = import_module("./src/rootchain/rootchain.star")
 
 
 def run(plan, validators, mnemonic, rootchain):
