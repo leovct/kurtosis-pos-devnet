@@ -1,6 +1,6 @@
 def run(plan, validators, mnemonic):
     validator_keys_path = "/var/lib/validators"
-    helper = plan.add_service(
+    plan.add_service(
         name="helper",
         config=ServiceConfig(
             image=ImageBuildSpec(image_name="helper", build_context_dir="."),
@@ -18,10 +18,8 @@ def run(plan, validators, mnemonic):
         assertion="==",
         target_value=0,
     )
-
-    validator_keys = plan.store_service_files(
+    return plan.store_service_files(
         service_name="helper",
         src="{}/*".format(validator_keys_path),
         name="validators_keys",
     )
-    return validator_keys

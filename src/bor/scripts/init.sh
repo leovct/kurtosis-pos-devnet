@@ -4,14 +4,18 @@
 echo "Processing templates..."
 cd /opt/genesis-contracts/matic-contracts || exit
 node scripts/process-templates.js --bor-chain-id "{{.BOR_CHAIN_ID}}"
+
+echo; echo "Compiling matic-contracts..."
 npm run truffle:compile
 
-echo "Generating validator set..."
+echo; echo "Generating validator set..."
 cd /opt/genesis-contracts || exit
-# TODO: fix that
-polycli wallet inspect --mnemonic "{{.MNEMONIC}}" --addresses "{{.VALIDATORS}}" > /data/keys.json
-printf "const validators = [\n%s\n];\n\nexports = module.exports = validators;\n" "$(jq -r '.Addresses[] | { address: .ETHAddress, stake: 100, balance: 1000000 }' < /data/keys.json | sed 's/\}/\},/g' | sed 's/^/    /')" > validators.js
+cp "{{.VAlIDATOR_KEYS_PATH}}/validators.js" /opt/genesis-contracts/validators.js
 node generate-borvalidatorset.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"
 
-echo "Generating genesis file..."
+echo; echo "Generating genesis file..."
 node generate-genesis.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"
+
+touch /tmp/done
+echo; echo "Done generating genesis file!"
+sleep 10
