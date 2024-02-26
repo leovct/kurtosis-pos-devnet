@@ -6,7 +6,7 @@ heimdalld init --chain-id "{{.CHAIN_ID}}" --home "{{.DATA_PATH}}"
 
 # Generate the validator private key.
 polycli wallet inspect --addresses "{{.VALIDATORS_COUNT}}" --mnemonic "{{.MNEMONIC}}" | jq -r ".Addresses[{{.NODE_ID}}] | .HexPrivateKey" > "{{.DATA_PATH}}/data/private_key.txt"
-pushd "{{.DATA_PATH}}/config" || exit
+cd "{{.DATA_PATH}}/config" || exit
 heimdallcli generate-validatorkey --home . "$(cat ../data/private_key.txt)"
 
 # Generate the final genesis file.
