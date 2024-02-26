@@ -73,6 +73,6 @@ def start_bor(plan, name, genesis, validator_keys, validator_keys_path):
                 "{}/genesis.json".format(BOR_DATA_PATH): genesis,
                 validator_keys_path: validator_keys,
             },
-            cmd=["bor", "server"],
+            cmd=["server"],
         ),
     )
