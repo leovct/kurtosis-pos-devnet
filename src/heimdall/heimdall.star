@@ -20,9 +20,16 @@ def run(plan, id, validator_keys, rootchain_rpc_url, bor_rpc_url):
         rootchain_rpc_url,
         bor_rpc_url,
         amqp_url,
-        validator_keys_path
+        validator_keys_path,
     )
-    start_heimdall(plan, heimdall_node_name, heimdall_config, amqp_url, validator_keys, validator_keys_path)
+    start_heimdall(
+        plan,
+        heimdall_node_name,
+        heimdall_config,
+        amqp_url,
+        validator_keys,
+        validator_keys_path,
+    )
 
 
 def start_rabbitmq(plan, name):
@@ -45,7 +52,7 @@ def generate_heimdall_config(
     rootchain_rpc_url,
     bor_rpc_url,
     amqp_url,
-    validator_keys_path
+    validator_keys_path,
 ):
     appTemplate = read_file("./config/app.toml")
     configTemplate = read_file("./config/config.toml")
