@@ -1,14 +1,16 @@
-bor_module = import_module("./src/bor/bor.star")
-heimdall_module = import_module("./src/heimdall/heimdall.star")
-helper_module = import_module("./src/helper/helper.star")
-rootchain_module = import_module("./src/rootchain/rootchain.star")
+bor_module = import_module("./src/bor/main.star")
+heimdall_module = import_module("./src/heimdall/main.star")
+rootchain_module = import_module("./src/rootchain/main.star")
+validator_keys_generator_module = import_module(
+    "./src/validator-keys-generator/main.star"
+)
 
 
 def run(plan, validators, mnemonic, rootchain):
     plan.print("validators: {}, mnemonic: {}".format(validators, mnemonic))
 
     # Generate validator keys.
-    validator_keys = helper_module.run(plan, validators, mnemonic)
+    validator_keys = validator_keys_generator_module.run(plan, validators, mnemonic)
 
     # Start the rootchain.
     plan.print("rootchain: {}".format(rootchain))

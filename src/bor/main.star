@@ -77,10 +77,7 @@ def generate_bor_config(plan, id, bor_node_name, heimdall_ip_address):
                     "BOR_NODE_ETH_ADDRESS": "",  # TODO
                 },
             ),
-            "config/pass.txt": struct(
-                template=passTemplate,
-                data={}
-            )
+            "config/pass.txt": struct(template=passTemplate, data={}),
         },
     )
 
