@@ -63,6 +63,7 @@ def run(plan, id, validator_keys, bor_genesis, heimdall_ip_address):
 
 def generate_bor_config(plan, id, bor_node_name, heimdall_ip_address):
     configTemplate = read_file("./config/config.toml")
+    passTemplate = read_file("./config/pass.txt")
     return plan.render_templates(
         name="{}-config".format(bor_node_name),
         config={
@@ -72,10 +73,13 @@ def generate_bor_config(plan, id, bor_node_name, heimdall_ip_address):
                     "BOR_NODE_ID": bor_node_name,
                     "BOR_DATA_PATH": BOR_DATA_PATH,
                     "HEIMDALL_NODE_IP_ADDRESS": heimdall_ip_address,
-                    "IS_MINER": "true",
                     "MINER_ETHERBASE": "",  # TODO
                     "BOR_NODE_ETH_ADDRESS": "",  # TODO
                 },
+            ),
+            "config/pass.txt": struct(
+                template=passTemplate,
+                data={}
             )
         },
     )
@@ -94,6 +98,6 @@ def start_bor(plan, name, config, genesis, validator_keys, validator_keys_path):
                 "{}/genesis".format(BOR_DATA_PATH): genesis,
                 validator_keys_path: validator_keys,
             },
-            cmd=["server", "--config {}/config.toml".format(BOR_DATA_PATH)],
+            cmd=["server", "--config={}/config/config.toml".format(BOR_DATA_PATH)],
         ),
     )

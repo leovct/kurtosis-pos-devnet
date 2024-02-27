@@ -1,4 +1,4 @@
-chain = "mainnet"
+chain = "{{.BOR_DATA_PATH}}/genesis/genesis.json"
 identity = "{{.BOR_NODE_ID}}"
 verbosity = 3
 log-level = ""
@@ -67,7 +67,7 @@ devfakeauthor = false
   lifetime = "3h0m0s"
 
 [miner]
-  mine = "{{.IS_MINER}}"
+  mine = true
   etherbase = "{{.MINER_ETHERBASE}}"
   extradata = ""
   gaslimit = 30000000
@@ -168,7 +168,7 @@ devfakeauthor = false
 
 [accounts]
   unlock = ["{{.BOR_NODE_ETH_ADDRESS}}"]
-  password = "{{.BOR_DATA_PATH}}/pass.txt"
+  password = "{{.BOR_DATA_PATH}}/config/pass.txt"
   allow-insecure-unlock = true
   lightkdf = false
   disable-bor-wallet = true
