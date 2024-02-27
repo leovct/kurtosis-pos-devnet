@@ -21,5 +21,5 @@ def run(plan, validators, mnemonic):
     return plan.store_service_files(
         service_name="helper",
         src="{}/*".format(validator_keys_path),
-        name="validators_keys",
+        name="validator-keys",
     )

@@ -43,7 +43,7 @@ def generate_bor_genesis(plan, validator_keys):
     return plan.store_service_files(
         service_name="bor-genesis-generator",
         src="/var/lib/bor/*",
-        name="bor_genesis",
+        name="bor-genesis",
     )
 
 
