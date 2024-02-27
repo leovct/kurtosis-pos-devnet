@@ -112,6 +112,6 @@ def start_bor(plan, name, config, genesis, validator_keys, validator_keys_path):
                 "{}/genesis".format(BOR_DATA_PATH): genesis,
                 validator_keys_path: validator_keys,
             },
-            cmd=["bor server", "--config={}/config/config.toml".format(BOR_DATA_PATH)],
+            cmd=["server", "--config={}/config/config.toml".format(BOR_DATA_PATH)],
         ),
     )
