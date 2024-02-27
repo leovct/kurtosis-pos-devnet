@@ -1,6 +1,5 @@
-def run(plan, validators, mnemonic):
+def run(plan, validators, mnemonic, data_path):
     name = "validator-keys-generator"
-    validator_keys_path = "/etc/validators"
     plan.add_service(
         name,
         config=ServiceConfig(
@@ -8,7 +7,7 @@ def run(plan, validators, mnemonic):
             env_vars={
                 "VALIDATORS_COUNT": "{}".format(validators),
                 "MNEMONIC": mnemonic,
-                "DATA_PATH": validator_keys_path,
+                "DATA_PATH": data_path,
             },
         ),
     )
@@ -21,6 +20,6 @@ def run(plan, validators, mnemonic):
     )
     return plan.store_service_files(
         service_name=name,
-        src="{}/*".format(validator_keys_path),
+        src="{}/*".format(data_path),
         name="validator-keys",
     )

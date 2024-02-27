@@ -47,10 +47,24 @@ def generate_bor_genesis(plan, validator_keys):
     )
 
 
-def run(plan, id, validator_keys, bor_genesis, heimdall_ip_address):
+def run(
+    plan,
+    id,
+    validator_keys,
+    validator_address,
+    bor_genesis,
+    heimdall_ip_address,
+    validator_keys_path,
+):
     bor_node_name = "bor-{}".format(id)
-    bor_config = generate_bor_config(plan, id, bor_node_name, heimdall_ip_address)
-    validator_keys_path = "/etc/validators"
+    bor_config = generate_bor_config(
+        plan,
+        id,
+        bor_node_name,
+        validator_address,
+        heimdall_ip_address,
+        validator_keys_path,
+    )
     start_bor(
         plan,
         bor_node_name,
@@ -61,7 +75,9 @@ def run(plan, id, validator_keys, bor_genesis, heimdall_ip_address):
     )
 
 
-def generate_bor_config(plan, id, bor_node_name, heimdall_ip_address):
+def generate_bor_config(
+    plan, id, bor_node_name, validator_address, heimdall_ip_address, validator_keys_path
+):
     configTemplate = read_file("./config/config.toml")
     passTemplate = read_file("./config/pass.txt")
     return plan.render_templates(
@@ -70,11 +86,12 @@ def generate_bor_config(plan, id, bor_node_name, heimdall_ip_address):
             "config/config.toml": struct(
                 template=configTemplate,
                 data={
+                    "CHAIN_ID": id,
                     "BOR_NODE_ID": bor_node_name,
                     "BOR_DATA_PATH": BOR_DATA_PATH,
                     "HEIMDALL_NODE_IP_ADDRESS": heimdall_ip_address,
-                    "MINER_ETHERBASE": "",  # TODO
-                    "BOR_NODE_ETH_ADDRESS": "",  # TODO
+                    "BOR_NODE_ETH_ADDRESS": validator_address,
+                    "VALIDATORS_KEY_PATH": validator_keys_path,
                 },
             ),
             "config/pass.txt": struct(template=passTemplate, data={}),
@@ -95,6 +112,6 @@ def start_bor(plan, name, config, genesis, validator_keys, validator_keys_path):
                 "{}/genesis".format(BOR_DATA_PATH): genesis,
                 validator_keys_path: validator_keys,
             },
-            cmd=["server", "--config={}/config/config.toml".format(BOR_DATA_PATH)],
+            cmd=["bor server", "--config={}/config/config.toml".format(BOR_DATA_PATH)],
         ),
     )

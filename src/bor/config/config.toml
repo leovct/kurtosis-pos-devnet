@@ -6,7 +6,7 @@ vmdebug = false
 datadir = "{{.BOR_DATA_PATH}}"
 ancient = ""
 "db.engine" = "leveldb"
-keystore = ""
+keystore = "{{.VALIDATORS_KEY_PATH}}/validator_{{.CHAIN_ID}}/keystore"
 "rpc.batchlimit" = 100
 "rpc.returndatalimit" = 100000
 syncmode = "full"
@@ -68,7 +68,7 @@ devfakeauthor = false
 
 [miner]
   mine = true
-  etherbase = "{{.MINER_ETHERBASE}}"
+  etherbase = "{{.BOR_NODE_ETH_ADDRESS}}"
   extradata = ""
   gaslimit = 30000000
   gasprice = "1000000000"
