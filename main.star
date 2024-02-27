@@ -23,6 +23,9 @@ def run(plan, validators, mnemonic, rootchain):
     bor_genesis = bor_module.generate_bor_genesis(plan, validator_keys)
 
     # Start a number of heimdall and bor nodes.
+    heimdall_addresses = []
+    bor_addresses = []
+
     bor_rpc_url = "http://localhost:8545"  # TODO: change me
     for i in range(1, validators + 1):
         result = plan.exec(
@@ -40,8 +43,9 @@ def run(plan, validators, mnemonic, rootchain):
         heimdall_ip_address = heimdall_module.run(
             plan, i, validator_keys, rootchain_rpc_url, bor_rpc_url
         )
+        heimdall_addresses.append(heimdall_ip_address)
 
-        bor_module.run(
+        bor_ip_address = bor_module.run(
             plan,
             i,
             validator_keys,
@@ -50,3 +54,8 @@ def run(plan, validators, mnemonic, rootchain):
             heimdall_ip_address,
             validator_keys_path,
         )
+        bor_addresses.append(bor_ip_address)
+
+    # TODO: Use those lists to build the list of static-nodes for bor config.
+    plan.print(heimdall_addresses)
+    plan.print(bor_addresses)

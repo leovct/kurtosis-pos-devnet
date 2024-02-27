@@ -65,7 +65,7 @@ def run(
         heimdall_ip_address,
         validator_keys_path,
     )
-    start_bor(
+    return start_bor(
         plan,
         bor_node_name,
         bor_config,
@@ -100,7 +100,7 @@ def generate_bor_config(
 
 
 def start_bor(plan, name, config, genesis, validator_keys, validator_keys_path):
-    return plan.add_service(
+    service = plan.add_service(
         name,
         config=ServiceConfig(
             image="0xpolygon/bor:1.2.3",
@@ -115,3 +115,4 @@ def start_bor(plan, name, config, genesis, validator_keys, validator_keys_path):
             cmd=["server", "--config={}/config/config.toml".format(BOR_DATA_PATH)],
         ),
     )
+    return service.ip_address
