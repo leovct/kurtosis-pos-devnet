@@ -22,7 +22,7 @@ def run(plan, id, validator_keys, rootchain_rpc_url, bor_rpc_url):
         amqp_url,
         validator_keys_path,
     )
-    start_heimdall(
+    return start_heimdall(
         plan,
         heimdall_node_name,
         heimdall_config,
