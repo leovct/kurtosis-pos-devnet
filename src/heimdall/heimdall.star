@@ -4,7 +4,7 @@ RABBITMQ_USER = "guest"
 RABBITMQ_PASSWORD = "guest"
 
 HEIMDALL_CHAIN_ID = "heimdall-137"
-HEIMDALL_DATA_PATH = "/var/lib/heimdall"
+HEIMDALL_DATA_PATH = "/etc/heimdall"
 
 
 def run(plan, id, validator_keys, rootchain_rpc_url, bor_rpc_url):
@@ -12,7 +12,7 @@ def run(plan, id, validator_keys, rootchain_rpc_url, bor_rpc_url):
     amqp_url = start_rabbitmq(plan, rabbitmq_node_name)
 
     heimdall_node_name = "heimdall-{}".format(id)
-    validator_keys_path = "/var/lib/validators"
+    validator_keys_path = "/etc/validators"
     heimdall_config = generate_heimdall_config(
         plan,
         id,
@@ -94,7 +94,7 @@ def generate_heimdall_config(
 
 
 def start_heimdall(plan, name, config, amqp_url, validator_keys, validator_keys_path):
-    plan.add_service(
+    service = plan.add_service(
         name=name,
         config=ServiceConfig(
             image="0xpolygon/heimdall:1.0.3",
@@ -110,3 +110,4 @@ def start_heimdall(plan, name, config, amqp_url, validator_keys, validator_keys_
             ],
         ),
     )
+    return service.ip_address

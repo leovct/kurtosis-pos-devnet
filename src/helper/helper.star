@@ -1,5 +1,5 @@
 def run(plan, validators, mnemonic):
-    validator_keys_path = "/var/lib/validators"
+    validator_keys_path = "/etc/validators"
     plan.add_service(
         name="helper",
         config=ServiceConfig(

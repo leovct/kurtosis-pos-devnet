@@ -16,9 +16,9 @@ cat /opt/genesis-contracts/validators.js
 
 echo; echo "Generating genesis file..."
 node generate-genesis.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"
-mkdir -p /var/lib/bor
-cp /opt/genesis-contracts/genesis.json /var/lib/bor/genesis.json
-cat /var/lib/bor/genesis.json
+mkdir -p /etc/bor
+cp /opt/genesis-contracts/genesis.json /etc/bor/genesis.json
+cat /etc/bor/genesis.json
 
 touch /tmp/done
 echo; echo "Done generating genesis file!"
