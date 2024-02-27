@@ -25,11 +25,11 @@ def generate_bor_genesis(plan, validator_keys):
                 image_name="bor-genesis-generator", build_context_dir="."
             ),
             files={
-                "/usr/local/bin": initScript,
+                "/opt/scripts": initScript,
                 validator_keys_path: validator_keys,
             },
             entrypoint=["/bin/sh", "-c"],
-            cmd=["chmod +x /usr/local/bin/init.sh && sh /usr/local/bin/init.sh"],
+            cmd=["chmod +x /opt/scripts/init.sh && sh /opt/scripts/init.sh"],
         ),
     )
     response = plan.wait(

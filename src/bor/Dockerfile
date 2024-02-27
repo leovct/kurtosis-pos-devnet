@@ -18,5 +18,4 @@ RUN git clone --branch master https://github.com/maticnetwork/genesis-contracts.
   && git submodule update \
   && cd matic-contracts \
   && npm install
-
 ENTRYPOINT ["bash"]

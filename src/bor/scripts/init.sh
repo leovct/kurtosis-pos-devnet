@@ -10,13 +10,15 @@ npm run truffle:compile
 
 echo; echo "Generating validator set..."
 cd /opt/genesis-contracts || exit
-cp "{{.VAlIDATOR_KEYS_PATH}}/validators.js" /opt/genesis-contracts/validators.js
+cp "{{.VAlIDATOR_KEYS_PATH}}"/validators.js /opt/genesis-contracts/validators.js
 node generate-borvalidatorset.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"
+cat /opt/genesis-contracts/validators.js
 
 echo; echo "Generating genesis file..."
 node generate-genesis.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"
 mkdir -p /var/lib/bor
 cp /opt/genesis-contracts/genesis.json /var/lib/bor/genesis.json
+cat /var/lib/bor/genesis.json
 
 touch /tmp/done
 echo; echo "Done generating genesis file!"
