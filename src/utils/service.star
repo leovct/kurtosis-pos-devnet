@@ -23,3 +23,14 @@ def define_completion_file_ready_condition(
         interval=interval,
         timeout=timeout,
     )
+
+
+def restart_service(plan, service_name):
+    """
+    Restart a service.
+
+    Args:
+        service_name (string): The name of the service to restart.
+    """
+    plan.stop_service(service_name)
+    plan.start_service(service_name)

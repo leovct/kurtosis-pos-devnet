@@ -7,7 +7,7 @@
 eth_rpc_url = "{{.ROOTCHAIN_RPC_URL}}"
 
 # RPC endpoint for bor chain
-bor_rpc_url = "{{.BOR_RPC_URL}}"
+bor_rpc_url = "http://bor_rpc_url:8545"
 
 # RPC endpoint for tendermint
 tendermint_rpc_url = "http://0.0.0.0:26657"

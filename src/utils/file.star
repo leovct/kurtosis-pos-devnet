@@ -34,3 +34,18 @@ def extract_json_key(plan, service_name, filename, key):
     )
     result = plan.exec(service_name=service_name, recipe=exec_recipe)
     return result["output"]
+
+
+def sed(plan, service_name, expression, filename):
+    """
+    Replace a value in a file using a sed expression within a specified service.
+
+    Args:
+        service_name (string): The name of the service.
+        expression (string): The expression for replacing the value.
+        filename (string): The name of the file to modify.
+    """
+    exec_recipe = ExecRecipe(
+        command=["/bin/sh", "-c", "sed -i '{}' {}".format(expression, filename)]
+    )
+    plan.exec(service_name=service_name, recipe=exec_recipe)
