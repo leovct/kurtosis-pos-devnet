@@ -3,12 +3,12 @@
 
 # Generate keys.
 mkdir "$DATA_PATH"
-polycli wallet inspect --addresses "$VALIDATORS_COUNT" --mnemonic "$MNEMONIC" > "$DATA_PATH/keys.json"
+polycli wallet inspect --addresses "$VALIDATOR_COUNT" --mnemonic "$MNEMONIC" > "$DATA_PATH/keys.json"
 echo "Validator keys generated!"
 echo "\`\`\`json"; cat "$DATA_PATH/keys.json"; echo "\`\`\`"
 
 # Extract address and key for each validator.
-for i in $(seq 0 $((VALIDATORS_COUNT - 1))); do
+for i in $(seq 0 $((VALIDATOR_COUNT - 1))); do
   mkdir "$DATA_PATH/validator_$((i + 1))"
 
   jq -r ".Addresses[$i]" < "$DATA_PATH/keys.json" | jq > "$DATA_PATH/validator_$((i + 1))/key.json"
