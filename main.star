@@ -1,7 +1,7 @@
 bor_module = import_module("./src/bor/main.star")
 heimdall_module = import_module("./src/heimdall/main.star")
 rootchain_module = import_module("./src/rootchain/main.star")
-utils = import_module("./src/utils/main.star")
+file_utils = import_module("./src/utils/file.star")
 validator_keys_generator_module = import_module(
     "./src/validator-keys-generator/main.star"
 )
@@ -27,12 +27,12 @@ def run(plan, validators, mnemonic, rootchain):
     bor_static_nodes = []
     bor_rpc_url = "http://localhost:8545"  # TODO: change me
     for i in range(1, validators + 1):
-        validator_address = utils.read_file_content(
+        validator_address = file_utils.read_file_content(
             plan,
             "validator-keys-generator",
             "{}/validator_{}/address.txt".format(validator_keys_path, i),
         )
-        bor_node_public_key = utils.extract_json_key(
+        bor_node_public_key = file_utils.extract_json_key(
             plan,
             "validator-keys-generator",
             "{}/validator_{}/nodekey.json".format(validator_keys_path, i),

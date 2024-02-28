@@ -1,4 +1,4 @@
-utils = import_module("../utils/main.star")
+service_utils = import_module("../utils/service.star")
 
 SERVICE_NAME = "validator-keys-generator"
 ARTIFACT_NAME = "validator-keys"
@@ -21,7 +21,7 @@ def start_validator_keys_generator(plan, validator_count, mnemonic, data_path):
             },
         ),
     )
-    utils.wait_for_service_to_be_ready(plan, SERVICE_NAME)
+    service_utils.wait_for_service_to_be_ready(plan, SERVICE_NAME)
 
 
 def copy_validator_keys(plan, data_path):
