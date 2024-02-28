@@ -27,12 +27,12 @@ def run(plan, validators, mnemonic, rootchain):
     bor_static_nodes = []
     bor_rpc_url = "http://localhost:8545"  # TODO: change me
     for i in range(1, validators + 1):
-        validator_address = utils.read_file_from_service(
+        validator_address = utils.read_file_content(
             plan,
             "validator-keys-generator",
             "{}/validator_{}/address.txt".format(validator_keys_path, i),
         )
-        bor_node_public_key = utils.extract_field_from_json_file(
+        bor_node_public_key = utils.extract_json_key(
             plan,
             "validator-keys-generator",
             "{}/validator_{}/nodekey.json".format(validator_keys_path, i),
