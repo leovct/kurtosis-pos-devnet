@@ -17,6 +17,7 @@ def run(plan, validators, mnemonic, data_path):
         field="code",
         assertion="==",
         target_value=0,
+        timeout="5m",
     )
     return plan.store_service_files(
         service_name=name,

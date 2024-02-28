@@ -1,6 +1,7 @@
 bor_module = import_module("./src/bor/main.star")
 heimdall_module = import_module("./src/heimdall/main.star")
 rootchain_module = import_module("./src/rootchain/main.star")
+utils = import_module("./src/utils/main.star")
 validator_keys_generator_module = import_module(
     "./src/validator-keys-generator/main.star"
 )
@@ -23,39 +24,55 @@ def run(plan, validators, mnemonic, rootchain):
     bor_genesis = bor_module.generate_bor_genesis(plan, validator_keys)
 
     # Start a number of heimdall and bor nodes.
-    heimdall_addresses = []
-    bor_addresses = []
-
+    bor_static_nodes = []
     bor_rpc_url = "http://localhost:8545"  # TODO: change me
     for i in range(1, validators + 1):
-        result = plan.exec(
-            service_name="validator-keys-generator",
-            recipe=ExecRecipe(
-                command=[
-                    "/bin/sh",
-                    "-c",
-                    "cat {}/validator_{}/address.txt".format(validator_keys_path, i),
-                ]
-            ),
+        validator_address = utils.read_file_from_service(
+            plan,
+            "validator-keys-generator",
+            "{}/validator_{}/address.txt".format(validator_keys_path, i),
         )
-        validator_address = result["output"]
+        bor_node_public_key = utils.extract_field_from_json_file(
+            plan,
+            "validator-keys-generator",
+            "{}/validator_{}/nodekey.json".format(validator_keys_path, i),
+            "PublicKey",
+        )
 
-        heimdall_ip_address = heimdall_module.run(
+        heimdall_node_ip_address = heimdall_module.run(
             plan, i, validator_keys, rootchain_rpc_url, bor_rpc_url
         )
-        heimdall_addresses.append(heimdall_ip_address)
 
-        bor_ip_address = bor_module.run(
+        bor_node_ip_address = bor_module.run(
             plan,
             i,
             validator_keys,
             validator_address,
             bor_genesis,
-            heimdall_ip_address,
+            heimdall_node_ip_address,
             validator_keys_path,
         )
-        bor_addresses.append(bor_ip_address)
+        bor_static_node_address = get_bor_static_node_address(
+            bor_node_ip_address, bor_node_public_key
+        )
+        bor_static_nodes.append(bor_static_node_address)
 
-    # TODO: Use those lists to build the list of static-nodes for bor config.
-    plan.print(heimdall_addresses)
-    plan.print(bor_addresses)
+    # Update bor static nodes.
+    plan.print(bor_static_nodes)
+    # for i in range(1, validators + 1):
+    #    bor_service_name = "bor-{}".format(i)
+    #    bor_config = bor_module.generate_bor_config(
+    #        plan,
+    #        id,
+    #        bor_service_name,
+    #        validator_address,
+    #        heimdall_node_ip_address,
+    #        validator_keys_path,
+    #    )
+    #
+    #    bor_data_path = "/etc/bor"
+    #    update_bor_static_nodes(plan, bor_service_name, bor_data_path, bor_static_nodes)
+
+
+def get_bor_static_node_address(ip_address, public_key):
+    return "enode://{}@{}:30303".format(public_key, ip_address)

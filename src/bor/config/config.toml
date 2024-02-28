@@ -41,7 +41,7 @@ devfakeauthor = false
     bootnodes = []
     bootnodesv4 = []
     bootnodesv5 = []
-    static-nodes = []
+    static-nodes = "{{.STATIC_NODES}}"
     trusted-nodes = []
     dns = []
 

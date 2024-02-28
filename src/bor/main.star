@@ -57,18 +57,9 @@ def run(
     validator_keys_path,
 ):
     bor_node_name = "bor-{}".format(id)
-    bor_config = generate_bor_config(
-        plan,
-        id,
-        bor_node_name,
-        validator_address,
-        heimdall_ip_address,
-        validator_keys_path,
-    )
-    return start_bor(
+    return start_dummy_bor(
         plan,
         bor_node_name,
-        bor_config,
         bor_genesis,
         validator_keys,
         validator_keys_path,
@@ -76,7 +67,13 @@ def run(
 
 
 def generate_bor_config(
-    plan, id, bor_node_name, validator_address, heimdall_ip_address, validator_keys_path
+    plan,
+    id,
+    bor_node_name,
+    validator_address,
+    heimdall_ip_address,
+    validator_keys_path,
+    static_nodes,
 ):
     configTemplate = read_file("./config/config.toml")
     passTemplate = read_file("./config/pass.txt")
@@ -92,6 +89,7 @@ def generate_bor_config(
                     "HEIMDALL_NODE_IP_ADDRESS": heimdall_ip_address,
                     "BOR_NODE_ETH_ADDRESS": validator_address,
                     "VALIDATORS_KEY_PATH": validator_keys_path,
+                    "STATIC_NODES": static_nodes,
                 },
             ),
             "config/pass.txt": struct(template=passTemplate, data={}),
@@ -99,7 +97,7 @@ def generate_bor_config(
     )
 
 
-def start_bor(plan, name, config, genesis, validator_keys, validator_keys_path):
+def start_dummy_bor(plan, name, genesis, validator_keys, validator_keys_path):
     service = plan.add_service(
         name,
         config=ServiceConfig(
@@ -108,11 +106,11 @@ def start_bor(plan, name, config, genesis, validator_keys, validator_keys_path):
                 # "http_rpc": PortSpec(8545, application_protocol="http")
             },
             files={
-                BOR_DATA_PATH: config,
                 "{}/genesis".format(BOR_DATA_PATH): genesis,
                 validator_keys_path: validator_keys,
             },
-            cmd=["server", "--config={}/config/config.toml".format(BOR_DATA_PATH)],
+            entrypoint=["/bin/sh"]
+            # cmd=["server", "--config={}/config/config.toml".format(BOR_DATA_PATH)],
         ),
     )
     return service.ip_address

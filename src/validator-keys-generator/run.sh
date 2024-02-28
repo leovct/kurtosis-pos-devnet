@@ -29,9 +29,10 @@ for i in $(seq 0 $((VALIDATORS_COUNT - 1))); do
   echo; echo "Keystore created for validator #$((i + 1))!"
   ls "$DATA_PATH/validator_$((i + 1))/keystore"
 
-  polycli nodekey | jq -r '.PrivateKey' > "$DATA_PATH/validator_$((i + 1))/bor_nodekey"
+  polycli nodekey | jq > "$DATA_PATH/validator_$((i + 1))/nodekey.json"
+  # TODO: Store nodekey for bor! - There may be issues when trying to sign atm
   echo; echo "Bor node key created for validator #$((i + 1))!"
-  cat "$DATA_PATH/validator_$((i + 1))/bor_nodekey"
+  cat "$DATA_PATH/validator_$((i + 1))/nodekey.json"
 done
 
 # Generate the list of validators, required to create bor genesis file.
