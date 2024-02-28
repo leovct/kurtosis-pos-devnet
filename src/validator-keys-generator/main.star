@@ -10,6 +10,7 @@ def run(plan, validator_count, mnemonic, data_path):
 
 
 def start_validator_keys_generator(plan, validator_count, mnemonic, data_path):
+    ready_condition = service_utils.define_completion_file_ready_condition()
     plan.add_service(
         name=SERVICE_NAME,
         config=ServiceConfig(
@@ -19,9 +20,9 @@ def start_validator_keys_generator(plan, validator_count, mnemonic, data_path):
                 "MNEMONIC": mnemonic,
                 "DATA_PATH": data_path,
             },
+            ready_conditions=ready_condition,
         ),
     )
-    service_utils.wait_for_service_to_be_ready(plan, SERVICE_NAME)
 
 
 def copy_validator_keys(plan, data_path):

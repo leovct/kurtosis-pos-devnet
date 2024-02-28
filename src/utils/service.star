@@ -1,22 +1,25 @@
-def wait_for_service_to_be_ready(
-    plan, service_name, completion_file_path="/tmp/done", timeout="5m"
+def define_completion_file_ready_condition(
+    completion_file_path="/tmp/done", interval="10s", timeout="5m"
 ):
     """
-    Wait for a service to be ready by checking if a completion file has been created.
+    Define a ready condition that waits for a completion file to be created.
 
     Args:
-        service_name (string): The name of the service.
-        completion_file_path (string): The path to the file indicating service readiness.
-        timeout (string): The maximum time to wait for service readiness.
+        completion_file_path (str): The path to the file indicating readiness.
+        interval (str): The time interval between readiness checks.
+        timeout (str): The maximum time to wait for the ready condition.
+
+    Returns:
+        ReadyCondition: A ready condition object.
     """
     exec_recipe = ExecRecipe(
         command=["/bin/sh", "-c", "cat {}".format(completion_file_path)]
     )
-    plan.wait(
-        service_name=service_name,
+    return ReadyCondition(
         recipe=exec_recipe,
         field="code",
         assertion="==",
         target_value=0,
+        interval=interval,
         timeout=timeout,
     )
