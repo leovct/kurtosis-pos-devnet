@@ -26,26 +26,33 @@ def run(plan, validators, mnemonic, rootchain):
     # Start a number of heimdall and bor nodes.
     bor_static_nodes = []
     bor_rpc_url = "http://localhost:8545"  # TODO: change me
-    for i in range(1, validators + 1):
+    for id in range(1, validators + 1):
+        validator_private_key = file_utils.extract_json_key(
+            plan,
+            "validator-keys-generator",
+            "{}/keys.json".format(validator_keys_path),
+            ".Addresses[{}].HexPrivateKey".format(id - 1),
+        )
+
         validator_address = file_utils.read_file_content(
             plan,
             "validator-keys-generator",
-            "{}/validator_{}/address.txt".format(validator_keys_path, i),
+            "{}/validator_{}/address.txt".format(validator_keys_path, id),
         )
         bor_node_public_key = file_utils.extract_json_key(
             plan,
             "validator-keys-generator",
-            "{}/validator_{}/nodekey.json".format(validator_keys_path, i),
-            "PublicKey",
+            "{}/validator_{}/nodekey.json".format(validator_keys_path, id),
+            ".PublicKey",
         )
 
         heimdall_node_ip_address = heimdall_module.run(
-            plan, i, validator_keys, rootchain_rpc_url, bor_rpc_url
+            plan, id, validator_private_key, rootchain_rpc_url, bor_rpc_url
         )
 
         bor_node_ip_address = bor_module.run(
             plan,
-            i,
+            id,
             validator_keys,
             validator_address,
             bor_genesis,

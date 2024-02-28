@@ -19,18 +19,18 @@ def read_file_content(plan, service_name, filename):
 def extract_json_key(plan, service_name, filename, key):
     """
     Extract a specific key from a JSON file, located in a service, and return its value.
+    Note: We don't use the extract feature here because there are issues when trying to retrieve nested JSON keys from a list.
 
     Args:
         service_name (string): The name of the service.
         filename (string): The name of the JSON file to read from.
-        key (string): The field to extract from the JSON file.
+        key (string): The key to extract from the JSON file.
 
     Returns:
         The extracted value, as a string.
     """
     exec_recipe = ExecRecipe(
-        command=["/bin/sh", "-c", "cat {}".format(filename)],
-        extract={"value": "fromjson | .{}".format(key)},
+        command=["/bin/sh", "-c", "jq -r '{}' {} | tr -d '\n'".format(key, filename)]
     )
     result = plan.exec(service_name=service_name, recipe=exec_recipe)
-    return result["extract.value"]
+    return result["output"]
