@@ -33,7 +33,11 @@ def start_heimdall_node(plan, id, config, rabbitmq_amq_url):
             image=IMAGE,
             files={"{}/config".format(DATA_PATH): config},
             entrypoint=["/bin/sh", "-c"],
-            cmd=["heimdalld start --all --amqp_url {} --bridge --rest-server".format(rabbitmq_amq_url)],
+            cmd=[
+                "heimdalld start --all --amqp_url {} --bridge --rest-server".format(
+                    rabbitmq_amq_url
+                )
+            ],
         ),
     )
     return service.ip_address
@@ -89,7 +93,9 @@ def generate_genesis(plan, id, validator_private_key):
         },
         {
             "description": "Generate the final genesis file",
-            "cmd": "heimdalld init --chain-id {} --home {} --id {} --overwrite-genesis".format(CHAIN_ID, DATA_PATH, id),
+            "cmd": "heimdalld init --chain-id {0} --home {1} --id {2} --overwrite-genesis 2> {1}/node_id.json".format(
+                CHAIN_ID, DATA_PATH, id
+            ),
         },
     ]
     for command in commands:
@@ -114,4 +120,16 @@ def replace_bor_rpc_url_in_config(plan, id, bor_node_ip_address):
         "heimdall-{}".format(id),
         expression,
         "{}/config/heimdall-config.toml".format(DATA_PATH),
+    )
+
+
+def replace_static_peers_in_config(plan, id, static_peers):
+    expression = 's/persistent_peers = ""/persistent_peers = "{}"/'.format(
+        static_peers
+    ).replace("http://", "http:\\/\\/")
+    file_utils.sed(
+        plan,
+        "heimdall-{}".format(id),
+        expression,
+        "{}/config/config.toml".format(DATA_PATH),
     )
