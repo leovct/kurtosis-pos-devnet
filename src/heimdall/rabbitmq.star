@@ -4,18 +4,18 @@ USER = "guest"
 PASSWORD = "guest"
 
 
-def start(plan, name):
+def start(plan, id):
     """
     Start a RabbitMQ service in the execution plan.
 
     Args:
-        name (str): The name to assign to the RabbitMQ service.
+        id (string): The unique identifier for the service.
 
     Returns:
         The AMQP connection string for the RabbitMQ service.
     """
     rabbitmq = plan.add_service(
-        name=name,
+        name="rabbitmq-{}".format(id),
         config=ServiceConfig(
             image=IMAGE,
             ports={"amqp": PortSpec(PORT, application_protocol="amqp")},

@@ -21,7 +21,7 @@ sub_graph_url = ""
 heimdall_rest_server = "http://0.0.0.0:1317"
 
 # AMQP endpoint
-amqp_url = "{{.AMQP_URL}}"
+amqp_url = "{{.RABBITMQ_AMQP_URL}}"
 
 ## Poll intervals
 checkpoint_poll_interval = "5m0s"
