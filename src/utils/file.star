@@ -7,7 +7,7 @@ def read_file_content(plan, service_name, filename):
         filename (string): The name of the file to read from.
 
     Returns:
-        The content of the file as a string.
+        The content of the file, as a string.
     """
     exec_recipe = ExecRecipe(
         command=["/bin/sh", "-c", "cat {} | tr -d '\n'".format(filename)]
@@ -24,6 +24,9 @@ def extract_json_key(plan, service_name, filename, key):
         service_name (string): The name of the service.
         filename (string): The name of the JSON file to read from.
         key (string): The field to extract from the JSON file.
+
+    Returns:
+        The extracted value, as a string.
     """
     exec_recipe = ExecRecipe(
         command=["/bin/sh", "-c", "cat {}".format(filename)],

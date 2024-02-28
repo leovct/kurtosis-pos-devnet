@@ -10,7 +10,7 @@ def define_completion_file_ready_condition(
         timeout (str): The maximum time to wait for the ready condition.
 
     Returns:
-        ReadyCondition: A ready condition object.
+        A ready condition object.
     """
     exec_recipe = ExecRecipe(
         command=["/bin/sh", "-c", "cat {}".format(completion_file_path)]

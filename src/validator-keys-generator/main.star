@@ -1,7 +1,6 @@
 service_utils = import_module("../utils/service.star")
 
 SERVICE_NAME = "validator-keys-generator"
-ARTIFACT_NAME = "validator-keys"
 
 
 def run(plan, validator_count, mnemonic, data_path):
@@ -29,5 +28,5 @@ def copy_validator_keys(plan, data_path):
     return plan.store_service_files(
         service_name=SERVICE_NAME,
         src="{}/*".format(data_path),
-        name=ARTIFACT_NAME,
+        name="validator-keys",
     )
