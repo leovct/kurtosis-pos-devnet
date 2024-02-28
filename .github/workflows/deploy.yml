@@ -22,4 +22,7 @@ jobs:
           sudo apt install kurtosis-cli
           kurtosis analytics disable
       - name: Deploy devnet
-        run: kurtosis run --args-file config.yml ${{ github.workspace }}
+        uses: kurtosis-tech/kurtosis-github-action@v1
+        with:
+          path: .
+          args: config.yml
