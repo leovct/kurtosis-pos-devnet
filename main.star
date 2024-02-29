@@ -71,18 +71,27 @@ def run(plan, validator_count, mnemonic, rootchain_rpc_url="", rootchain={}):
         )
         bor_static_nodes.append(bor_static_node_address)
 
+    bor_static_nodes_quoted = ['"{}"'.format(value) for value in bor_static_nodes]
+
     for id in range(validator_count):
         # Adjust the config given the randomly generated ip addresses.
         heimdall_static_peers_updated = (
             heimdall_static_peers[:id] + heimdall_static_peers[id + 1 :]
         )
         heimdall_static_peers_string = ",".join(heimdall_static_peers_updated)
+        plan.print(heimdall_static_peers_string)
+
+        bor_static_nodes_updated = (
+            bor_static_nodes_quoted[:id] + bor_static_nodes_quoted[id + 1 :]
+        )
+        bor_static_nodes_string = ", ".join(bor_static_nodes_updated)
+        plan.print(bor_static_nodes_string)
 
         bor_node_ip_address = bor_nodes_ip_addresses[id]
         heimdall_module.update_config_and_restart(
             plan, id, bor_node_ip_address, heimdall_static_peers_string
         )
-        # bor_module.update_config_and_restart(plan, id, bor_static_nodes)
+        bor_module.update_config_and_restart(plan, id, bor_static_nodes_string)
 
 
 def get_bor_static_node_address(ip_address, public_key):

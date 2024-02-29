@@ -13,6 +13,7 @@ def run(
 ):
     bor_config = _generate_config(plan, id, validator_address, heimdall_node_ip_address)
     bor_ip_address = _start_node(plan, id, bor_config, bor_keystore, bor_genesis)
+    return bor_ip_address
 
 
 # Start the Bor node.
@@ -115,7 +116,12 @@ def update_config_and_restart(plan, id, bor_static_peers):
 
 # Replace the `static-nodes` placeholder in configuration.
 def _replace_static_nodes_in_config(plan, id, static_nodes):
-    expression = "s/static-nodes = \\[\\]/static-nodes = {}]/".format(static_nodes)
+    expression = (
+        "s/static-nodes = []/static-nodes = [{}]/".format(static_nodes)
+        .replace("[", "\\[")
+        .replace("]", "\\]")
+        .replace("://", ":\\/\\/")
+    )
     service_utils.sed_file_in_service(
         plan,
         "bor-{}".format(id),

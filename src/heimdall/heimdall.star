@@ -118,7 +118,7 @@ def _replace_bor_rpc_url_in_config(plan, id, bor_node_ip_address):
 def _replace_static_peers_in_config(plan, id, heimdall_static_peers):
     expression = 's/persistent_peers = ""/persistent_peers = "{}"/'.format(
         heimdall_static_peers
-    ).replace("http://", "http:\\/\\/")
+    ).replace("://", ":\\/\\/")
     service_utils.sed_file_in_service(
         plan,
         "heimdall-{}".format(id),
