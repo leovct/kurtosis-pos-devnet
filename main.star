@@ -1,5 +1,5 @@
 bor_module = import_module("./src/bor/main.star")
-heimdall_module = import_module("./src/heimdall/main.star")
+heimdall_module = import_module("./src/heimdall/heimdall.star")
 rootchain_module = import_module("./src/rootchain/main.star")
 service_utils = import_module("./src/utils/service.star")
 validator_keys_generator_module = import_module(
@@ -53,17 +53,10 @@ def run(plan, validators, mnemonic, rootchain):
         heimdall_node_ip_address = heimdall_module.run(
             plan, id, validator_private_key, rootchain_rpc_url
         )
-        heimdall_node_id = service_utils.extract_json_key_from_service_without_jq(
-            plan,
-            "heimdall-{}".format(id),
-            "/root/.heimdalld/node_id.json",
-            ".node_id",
+        heimdall_node_p2p_address = heimdall_module.get_heimdall_static_peer_address(
+            plan, id, heimdall_node_ip_address
         )
-        plan.print(heimdall_node_id)
-        heimdall_static_peer_address = get_heimdall_static_peer_address(
-            heimdall_node_id, heimdall_node_ip_address
-        )
-        heimdall_static_peers.append(heimdall_static_peer_address)
+        heimdall_static_peers.append(heimdall_node_p2p_address)
 
         bor_node_ip_address = bor_module.run(
             plan,
@@ -110,8 +103,3 @@ def run(plan, validators, mnemonic, rootchain):
 
 def get_bor_static_node_address(ip_address, public_key):
     return "enode://{}@{}:30303".format(public_key, ip_address)
-
-
-def get_heimdall_static_peer_address(node_id, ip_address):
-    # TODO: Provision an old docker devnet and find out what's the format
-    return "{}@{}:26656".format(node_id, ip_address)
