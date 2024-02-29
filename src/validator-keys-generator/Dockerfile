@@ -12,5 +12,5 @@ COPY --from=polycli-builder /opt/polycli/bindings/ /opt/bindings/
 RUN apt-get --yes update \
     && apt-get install --yes --no-install-recommends jq=1.6-2.1 \
     && rm -rf /var/lib/apt/lists/*
-COPY run.sh /usr/local/bin/
-CMD ["sh", "-c", "run.sh"]
+COPY generate-keys.sh /usr/local/bin/
+CMD ["sh", "-c", "generate-key.sh"]
