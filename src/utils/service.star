@@ -4,6 +4,15 @@ def restart_service(plan, service_name):
     plan.start_service(service_name)
 
 
+# Execute multiple commands against a service.
+# Note: Each command must have a description and an expression field.
+def exec_commands(plan, service_name, commands):
+    for command in commands:
+        plan.print(command["description"])
+        exec_recipe = ExecRecipe(command=["/bin/sh", "-c", command["expression"]])
+        plan.exec(service_name=service_name, recipe=exec_recipe)
+
+
 # Read and retrieve the content of a file, within a service.
 # Note: It automatically removes newline characters.
 def read_file_from_service(plan, service_name, filename):

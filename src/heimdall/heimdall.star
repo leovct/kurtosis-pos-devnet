@@ -21,6 +21,9 @@ def _start_node(plan, id, config, rabbitmq_amq_url):
         name="heimdall-{}".format(id),
         config=ServiceConfig(
             image=IMAGE,
+            ports={
+                # TODO: Find how to expose those ports.
+            },
             files={"{}/config".format(DATA_PATH): config},
             entrypoint=["/bin/sh", "-c"],
             cmd=[
@@ -66,32 +69,31 @@ def _generate_config(plan, id, rootchain_rpc_url, rabbitmq_amqp_url):
 def _generate_genesis(plan, id, validator_private_key):
     commands = [
         {
-            "description": "Generate dummy configuration files (including genesis)",
-            "cmd": "heimdalld init --chain-id {} --home {}".format(CHAIN_ID, DATA_PATH),
+            "description": "Generating dummy configuration files (including genesis)",
+            "expression": "heimdalld init --chain-id {} --home {}".format(
+                CHAIN_ID, DATA_PATH
+            ),
         },
         {
-            "description": "Format the validator private key",
-            "cmd": "heimdallcli generate-validatorkey --home {} {}".format(
+            "description": "Formatting the validator private key",
+            "expression": "heimdallcli generate-validatorkey --home {} {}".format(
                 DATA_PATH, validator_private_key
             ),
         },
         {
-            "description": "Generate the final genesis file",
-            "cmd": "heimdalld init --chain-id {0} --home {1} --id {2} --overwrite-genesis 2> {1}/node_id.json".format(
+            "description": "Generating the final genesis file",
+            "expression": "heimdalld init --chain-id {0} --home {1} --id {2} --overwrite-genesis 2> {1}/node_id.json".format(
                 CHAIN_ID, DATA_PATH, id
             ),
         },
     ]
-    for command in commands:
-        plan.print(command["description"])
-        exec_recipe = ExecRecipe(command=["/bin/sh", "-c", command["cmd"]])
-        plan.exec(service_name="heimdall-{}".format(id), recipe=exec_recipe)
+    service_utils.exec_commands(plan, "heimdall-{}".format(id), commands)
 
 
 # Update addresses in configuration files and restart the Heimdall node.
 # Note: Instead of harcoding addresses, they are randomly generated once services are started.
 # Thus, we retrieve those addresses and update the configuration files accordingly.
-def update_config(plan, id, bor_node_ip_address, heimdall_static_peers):
+def update_config_and_restart(plan, id, bor_node_ip_address, heimdall_static_peers):
     _replace_bor_rpc_url_in_config(plan, id, bor_node_ip_address)
     _replace_static_peers_in_config(plan, id, heimdall_static_peers)
     service_utils.restart_service(plan, "heimdall-{}".format(id))

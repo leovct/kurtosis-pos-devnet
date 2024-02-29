@@ -1,38 +1,26 @@
 #!/bin/bash
 # Generate validators keys.
 
-# Generate keys.
+# Generate validator keys.
 mkdir "$DATA_PATH"
 polycli wallet inspect --addresses "$VALIDATOR_COUNT" --mnemonic "$MNEMONIC" > "$DATA_PATH/keys.json"
 echo "Validator keys generated!"
 echo "\`\`\`json"; cat "$DATA_PATH/keys.json"; echo "\`\`\`"
 
-# Extract address and key for each validator.
+# Setting up bor keys.
 for i in $(seq 0 $((VALIDATOR_COUNT - 1))); do
-  mkdir "$DATA_PATH/validator_$((i + 1))"
+  # Generate bor keystore.
+  mkdir -p "$DATA_PATH/validator_$i/keystore"
+  hex_private_key="$(jq -r ".Addresses[$i].HexPrivateKey" < "$DATA_PATH/keys.json")"
+  polycli parseethwallet --hexkey "$hex_private_key" --keystore "$DATA_PATH/validator_$i/keystore"
+  echo; echo "Keystore created for validator #$i!"
+  ls "$DATA_PATH/validator_$i/keystore"
 
-  jq -r ".Addresses[$i]" < "$DATA_PATH/keys.json" | jq > "$DATA_PATH/validator_$((i + 1))/key.json"
-  echo; echo "Key extracted for validator #$((i + 1))!"
-  echo "\`\`\`json"; cat "$DATA_PATH/validator_$((i + 1))/key.json"; echo "\`\`\`"
-
-  # Required to set up heimdall.
-  hex_private_key="$(jq -r ".HexPrivateKey" < "$DATA_PATH/validator_$((i + 1))/key.json")"
-  echo -n "$hex_private_key" > "$DATA_PATH/validator_$((i + 1))/key.txt"
-
-  # Required to set up bor.
-  jq -r ".Addresses[$i] | .ETHAddress" < "$DATA_PATH/keys.json" | tr -d "\n" > "$DATA_PATH/validator_$((i + 1))/address.txt"
-  echo; echo "Address extracted for validator #$((i + 1))!"
-  cat "$DATA_PATH/validator_$((i + 1))/address.txt"
-
-  mkdir "$DATA_PATH/validator_$((i + 1))/keystore"
-  polycli parseethwallet --hexkey "$hex_private_key" --keystore "$DATA_PATH/validator_$((i + 1))/keystore"
-  echo; echo "Keystore created for validator #$((i + 1))!"
-  ls "$DATA_PATH/validator_$((i + 1))/keystore"
-
-  polycli nodekey | jq > "$DATA_PATH/validator_$((i + 1))/nodekey.json"
+  # Generate bor node p2p key.
+  polycli nodekey | jq > "$DATA_PATH/validator_$i/nodekey.json"
   # TODO: Store nodekey for bor! - There may be issues when trying to sign atm
-  echo; echo "Bor node key created for validator #$((i + 1))!"
-  cat "$DATA_PATH/validator_$((i + 1))/nodekey.json"
+  echo; echo "Bor node key created for validator #$i!"
+  cat "$DATA_PATH/validator_$i/nodekey.json"
 done
 
 # Generate the list of validators, required to create bor genesis file.

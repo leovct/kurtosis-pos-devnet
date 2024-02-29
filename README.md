@@ -5,7 +5,7 @@ This is a [Kurtosis](https://github.com/kurtosis-tech/kurtosis) package that wil
 ## Deploy the devnet
 
 ```bash
-$ kurtosis run --enclave pos-devnet --args-file config.yml .
+$ kurtosis clean -a && kurtosis run --enclave pos-devnet --args-file config.yml .
 ...
 Starlark code successfully run. No output was returned.
 

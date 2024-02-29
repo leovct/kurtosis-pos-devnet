@@ -13,4 +13,4 @@ RUN apt-get --yes update \
     && apt-get install --yes --no-install-recommends jq=1.6-2.1 \
     && rm -rf /var/lib/apt/lists/*
 COPY run.sh /usr/local/bin/
-CMD ["sh", "-c", "run.sh && sleep 10"]
+CMD ["sh", "-c", "run.sh"]

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 # Generate Bor genesis file.
 
 echo "Processing templates..."
@@ -16,9 +16,9 @@ cat /opt/genesis-contracts/validators.js
 
 echo; echo "Generating genesis file..."
 node generate-genesis.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"
-mkdir -p /etc/bor
-cp /opt/genesis-contracts/genesis.json /etc/bor/genesis.json
-cat /etc/bor/genesis.json
+mkdir -p "{{.GENESIS_FOLDER}}"
+cp /opt/genesis-contracts/genesis.json "{{.GENESIS_FOLDER}}/genesis.json"
+cat "{{.GENESIS_FOLDER}}/genesis.json"
 
 touch /tmp/done
 echo; echo "Done generating genesis file!"

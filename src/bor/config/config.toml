@@ -1,12 +1,12 @@
-chain = "{{.BOR_DATA_PATH}}/genesis/genesis.json"
-identity = "{{.BOR_NODE_ID}}"
+chain = "{{.DATA_PATH}}/genesis/genesis.json"
+identity = "bor-{{.NODE_ID}}"
 verbosity = 3
 log-level = ""
 vmdebug = false
-datadir = "{{.BOR_DATA_PATH}}"
+datadir = "{{.DATA_PATH}}"
 ancient = ""
 "db.engine" = "leveldb"
-keystore = "{{.VALIDATORS_KEY_PATH}}/validator_{{.CHAIN_ID}}/keystore"
+keystore = "{{.DATA_PATH}}/config/keystore"
 "rpc.batchlimit" = 100
 "rpc.returndatalimit" = 100000
 syncmode = "full"
@@ -41,7 +41,7 @@ devfakeauthor = false
     bootnodes = []
     bootnodesv4 = []
     bootnodesv5 = []
-    static-nodes = "{{.STATIC_NODES}}"
+    static-nodes = []
     trusted-nodes = []
     dns = []
 
@@ -68,7 +68,7 @@ devfakeauthor = false
 
 [miner]
   mine = true
-  etherbase = "{{.BOR_NODE_ETH_ADDRESS}}"
+  etherbase = "{{.VALIDATOR_ADDRESS}}"
   extradata = ""
   gaslimit = 30000000
   gasprice = "1000000000"
@@ -167,8 +167,8 @@ devfakeauthor = false
   compactiontotalsizemultiplier = 10.0
 
 [accounts]
-  unlock = ["{{.BOR_NODE_ETH_ADDRESS}}"]
-  password = "{{.BOR_DATA_PATH}}/config/pass.txt"
+  unlock = ["{{.VALIDATOR_ADDRESS}}"]
+  password = "{{.DATA_PATH}}/config/pass.txt"
   allow-insecure-unlock = true
   lightkdf = false
   disable-bor-wallet = true
