@@ -16,16 +16,14 @@ FEE_TOPUP = 2000
 def run(
     plan, validator_count, rootchain_params, mnemonic, bor_chain_id, validator_keys
 ):
-    rootchain_db = ""
-    if rootchain_params["deploy_contracts"]:
-        rootchain_db = _start_rootchain_contract_deployer(
-            plan,
-            validator_count,
-            rootchain_params,
-            mnemonic,
-            bor_chain_id,
-            validator_keys,
-        )
+    rootchain_db = _start_rootchain_contract_deployer(
+        plan,
+        validator_count,
+        rootchain_params,
+        mnemonic,
+        bor_chain_id,
+        validator_keys,
+    )
     _start_rootchain(plan, validator_count, rootchain_params, mnemonic, rootchain_db)
 
 
@@ -105,17 +103,12 @@ def _start_rootchain_contract_deployer(
 def _start_rootchain(plan, validator_count, rootchain_params, mnemonic, db):
     ganache_args = _define_ganache_args(validator_count, rootchain_params, mnemonic)
     ganache_args.append("--server.port={}".format(HTTP_RPC_PORT))
-
-    files = {}
-    if rootchain_params["deploy_contracts"]:
-        files = {"{}".format(DATA_PATH): db}
-
     service = plan.add_service(
         name=ROOTCHAIN_SERVICE_NAME,
         config=ServiceConfig(
             image=ROOTCHAIN_IMAGE,
             ports={"http_rpc": PortSpec(HTTP_RPC_PORT, application_protocol="http")},
-            files=files,
+            files={"{}".format(DATA_PATH): db},
             cmd=ganache_args,
         ),
     )
