@@ -1,4 +1,4 @@
-file_utils = import_module("../utils/file.star")
+service_utils = import_module("../utils/service.star")
 script_utils = import_module("../utils/script.star")
 rabbitmq = import_module("./rabbitmq.star")
 
@@ -115,7 +115,7 @@ def replace_bor_rpc_url_in_config(plan, id, bor_node_ip_address):
     expression = 's/bor_rpc_url = "http:\\/\\/bor_rpc_url:8545"/bor_rpc_url = "http:\\/\\/{}:8545"/'.format(
         bor_node_ip_address
     )
-    file_utils.sed(
+    service_utils.sed_file_in_service(
         plan,
         "heimdall-{}".format(id),
         expression,
@@ -127,7 +127,7 @@ def replace_static_peers_in_config(plan, id, static_peers):
     expression = 's/persistent_peers = ""/persistent_peers = "{}"/'.format(
         static_peers
     ).replace("http://", "http:\\/\\/")
-    file_utils.sed(
+    service_utils.sed_file_in_service(
         plan,
         "heimdall-{}".format(id),
         expression,

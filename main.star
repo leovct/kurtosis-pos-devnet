@@ -1,7 +1,6 @@
 bor_module = import_module("./src/bor/main.star")
 heimdall_module = import_module("./src/heimdall/main.star")
 rootchain_module = import_module("./src/rootchain/main.star")
-file_utils = import_module("./src/utils/file.star")
 service_utils = import_module("./src/utils/service.star")
 validator_keys_generator_module = import_module(
     "./src/validator-keys-generator/main.star"
@@ -33,18 +32,18 @@ def run(plan, validators, mnemonic, rootchain):
     heimdall_static_peers = []
     bor_static_nodes = []
     for id in range(1, validators + 1):
-        validator_private_key = file_utils.extract_json_key_with_jq(
+        validator_private_key = service_utils.extract_json_key_from_service_with_jq(
             plan,
             "validator-keys-generator",
             "{}/keys.json".format(validator_keys_path),
             ".Addresses[{}].HexPrivateKey".format(id - 1),
         )
-        validator_address = file_utils.read_file_content(
+        validator_address = service_utils.read_file_from_service(
             plan,
             "validator-keys-generator",
             "{}/validator_{}/address.txt".format(validator_keys_path, id),
         )
-        bor_node_public_key = file_utils.extract_json_key_with_jq(
+        bor_node_public_key = service_utils.extract_json_key_from_service_with_jq(
             plan,
             "validator-keys-generator",
             "{}/validator_{}/nodekey.json".format(validator_keys_path, id),
@@ -54,7 +53,7 @@ def run(plan, validators, mnemonic, rootchain):
         heimdall_node_ip_address = heimdall_module.run(
             plan, id, validator_private_key, rootchain_rpc_url
         )
-        heimdall_node_id = file_utils.extract_json_key_without_jq(
+        heimdall_node_id = service_utils.extract_json_key_from_service_without_jq(
             plan,
             "heimdall-{}".format(id),
             "/root/.heimdalld/node_id.json",
