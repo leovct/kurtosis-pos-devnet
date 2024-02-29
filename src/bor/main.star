@@ -27,9 +27,7 @@ def _start_node(plan, id, config, genesis):
                 "{}/config".format(DATA_PATH): config,
                 "{}/genesis".format(DATA_PATH): genesis,
             },
-            entrypoint=["/bin/sh", "-c"],
-            cmd=["sleep infinity"],
-            # cmd=["server", "--config={}/config/config.toml".format(DATA_PATH)],
+            cmd=["server", "--config={}/config/config.toml".format(DATA_PATH)],
         ),
     )
     return service.ip_address
