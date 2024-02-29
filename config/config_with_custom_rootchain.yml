@@ -1,7 +1,6 @@
 ---
-validator_count: 2
+validator_count: 4
 mnemonic: code code code code code code code code code code code quality
-
 rootchain:
   hardfork: shanghai
   miner_coinbase_address: "0x85dA99c8a7C2C95964c8EfD687E95E632Fc533D6"
