@@ -4,27 +4,27 @@ script_utils = import_module("../utils/script.star")
 IMAGE = "0xpolygon/bor:1.2.3"
 BOR_CHAIN_ID = "137"
 HEIMDALL_CHAIN_ID = "heimdall-137"  # TODO: Remove harcoded value.
-DATA_PATH = "/etc/bors"
+DATA_PATH = "/etc/bor"
 
 
 # Configure and start a Bor node.
-def run(plan, id, validator_address, heimdall_node_ip_address, bor_genesis):
+def run(plan, id, validator_address, heimdall_node_ip_address, bor_keystore, bor_genesis):
     bor_config = _generate_config(plan, id, validator_address, heimdall_node_ip_address)
-    bor_ip_address = _start_node(plan, id, bor_config, bor_genesis)
+    bor_ip_address = _start_node(plan, id, bor_config, bor_keystore, bor_genesis)
 
 
 # Start the Bor node.
-def _start_node(plan, id, config, genesis):
+def _start_node(plan, id, config, keystore, genesis):
     service = plan.add_service(
         name="bor-{}".format(id),
         config=ServiceConfig(
             image=IMAGE,
             ports={
-                # TODO: Find how to expose those ports.
-                # "http_rpc": PortSpec(8545, application_protocol="http")
+                "http_rpc": PortSpec(8545, application_protocol="http")
             },
             files={
                 "{}/config".format(DATA_PATH): config,
+                "/opt/keys".format(DATA_PATH): keystore, # TODO: Update this way of doing.
                 "{}/genesis".format(DATA_PATH): genesis,
             },
             cmd=["server", "--config={}/config/config.toml".format(DATA_PATH)],

@@ -22,7 +22,9 @@ def _start_node(plan, id, config, rabbitmq_amq_url):
         config=ServiceConfig(
             image=IMAGE,
             ports={
-                # TODO: Find how to expose those ports.
+                #"ethereum_p2p": PortSpec(30303, application_protocol="tcp"),
+                "tendermint_rpc": PortSpec(1317, application_protocol="http"),
+                "tendermint_p2p": PortSpec(26656, application_protocol="tcp"),
             },
             files={"{}/config".format(DATA_PATH): config},
             entrypoint=["/bin/sh", "-c"],

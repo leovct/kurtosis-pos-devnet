@@ -38,12 +38,12 @@ def run(plan, validator_count, mnemonic, rootchain_rpc_url="", rootchain={}):
     bor_genesis = bor_module.generate_bor_genesis(plan, keys_artifact)
 
     # Start a number of heimdall and bor nodes.
-    plan.print("Starting nodes")
     heimdall_nodes_ip_addresses = {}
     bor_nodes_ip_addresses = {}
     heimdall_static_peers = []
     bor_static_nodes = []
     for id in range(validator_count):
+        plan.print("Starting validator node {}".format(id))
         validator_eth_address = validator_keys[id]["eth_address"]
         validator_private_key = validator_keys[id]["private_key"]
         validator_bor_p2p_public_key = validator_keys[id]["bor_p2p_public_key"]
@@ -63,6 +63,7 @@ def run(plan, validator_count, mnemonic, rootchain_rpc_url="", rootchain={}):
             id,
             validator_eth_address,
             heimdall_node_ip_address,
+            keys_artifact,
             bor_genesis,
         )
         bor_nodes_ip_addresses[id] = bor_node_ip_address
@@ -71,14 +72,11 @@ def run(plan, validator_count, mnemonic, rootchain_rpc_url="", rootchain={}):
         )
         bor_static_nodes.append(bor_static_node_address)
 
-    # Update bor static nodes.
-    heimdall_static_peers_string = ",".join(heimdall_static_peers)
-    plan.print(heimdall_static_peers)
-    plan.print(heimdall_static_peers_string)
-    plan.print(bor_static_nodes)
-
     for id in range(validator_count):
         # Adjust the config given the randomly generated ip addresses.
+        heimdall_static_peers_updated = heimdall_static_peers[:id] + heimdall_static_peers[id + 1:]
+        heimdall_static_peers_string = ",".join(heimdall_static_peers_updated)
+
         bor_node_ip_address = bor_nodes_ip_addresses[id]
         heimdall_module.update_config_and_restart(
             plan, id, bor_node_ip_address, heimdall_static_peers_string
