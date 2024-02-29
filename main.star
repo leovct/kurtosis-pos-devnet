@@ -89,11 +89,9 @@ def run(plan, validators, mnemonic, rootchain):
     for id in range(1, validators + 1):
         # Adjust the config given the randomly generated ip addresses.
         bor_node_ip_address = bor_nodes_ip_addresses[id]
-        heimdall_module.replace_bor_rpc_url_in_config(plan, id, bor_node_ip_address)
-        heimdall_module.replace_static_peers_in_config(
-            plan, id, heimdall_static_peers_string
+        heimdall_module.update_config(
+            plan, id, bor_node_ip_address, heimdall_static_peers_string
         )
-        service_utils.restart_service(plan, "heimdall-{}".format(id))
 
     # for i in range(1, validators + 1):
     #    bor_service_name = "bor-{}".format(i)
