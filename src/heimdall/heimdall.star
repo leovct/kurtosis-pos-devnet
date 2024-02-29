@@ -128,7 +128,6 @@ def _replace_static_peers_in_config(plan, id, heimdall_static_peers):
 
 
 # Return the heimdall static peer address of a given node.
-# TODO: Provision the old docker devnet to find out what is the static peers format.
 def get_heimdall_static_peer_address(plan, id, ip_address):
     node_id = service_utils.extract_json_key_from_service_without_jq(
         plan,
