@@ -60,7 +60,7 @@ def _generate_config(plan, id, validator_address, heimdall_node_ip_address):
 # Generate genesis file.
 def generate_bor_genesis(plan, keys_artifact):
     genesis_generator_service_name = "bor-genesis-generator"
-    genesis_folder = "/etc/bor/genesis"
+    genesis_folder = "{}/genesis".format(DATA_PATH)
 
     genesis_script_template = read_file("./generate-genesis.sh")
     genesis_script = plan.render_templates(
