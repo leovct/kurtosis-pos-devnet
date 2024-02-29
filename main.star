@@ -13,8 +13,8 @@ def run(
     mnemonic="code code code code code code code code code code code quality",
     rootchain_rpc_url="",
     rootchain={
-        hardfork: "shanghai",
-        miner_coinbase_address: "0x85dA99c8a7C2C95964c8EfD687E95E632Fc533D6",
+        "hardfork": "shanghai",
+        "miner_coinbase_address": "0x85dA99c8a7C2C95964c8EfD687E95E632Fc533D6",
     },
 ):
     # Generate validator keys.
