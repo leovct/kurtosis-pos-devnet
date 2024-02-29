@@ -7,7 +7,7 @@ validator_keys_generator_module = import_module(
 )
 
 
-def run(plan, validator_count, mnemonic, rootchain):
+def run(plan, validator_count, mnemonic, rootchain_rpc_url="", rootchain={}):
     # Generate validator keys.
     plan.print(
         "Generating keys for {} validators using menmonic: {}".format(
@@ -21,9 +21,7 @@ def run(plan, validator_count, mnemonic, rootchain):
     plan.print("Keys generated: {}".format(validator_keys))
 
     # Start the rootchain if `rootchain_rpc_url` has not been specified.
-    rootchain_rpc_url = ""
-    if "rpc_url" in rootchain:
-        rootchain_rpc_url = rootchain["rpc_url"]
+    if rootchain_rpc_url != "":
         plan.print("Using {} as rootchain RPC URL".format(rootchain_rpc_url))
     else:
         plan.print(

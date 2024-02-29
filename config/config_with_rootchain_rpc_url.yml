@@ -1,6 +1,4 @@
 ---
 validator_count: 4
 mnemonic: code code code code code code code code code code code quality
-
-rootchain:
-  rpc_url: https://eth.llamarpc.com
+rootchain_rpc_url: https://eth.llamarpc.com
