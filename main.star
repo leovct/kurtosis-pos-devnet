@@ -7,7 +7,16 @@ validator_keys_generator_module = import_module(
 )
 
 
-def run(plan, validator_count, mnemonic, rootchain_rpc_url="", rootchain={}):
+def run(
+    plan,
+    validator_count=2,
+    mnemonic="code code code code code code code code code code code quality",
+    rootchain_rpc_url="",
+    rootchain={
+        hardfork: "shanghai",
+        miner_coinbase_address: "0x85dA99c8a7C2C95964c8EfD687E95E632Fc533D6",
+    },
+):
     # Generate validator keys.
     plan.print(
         "Generating keys for {} validators using menmonic: {}".format(
