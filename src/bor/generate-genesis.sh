@@ -8,11 +8,13 @@ node scripts/process-templates.js --bor-chain-id "{{.BOR_CHAIN_ID}}"
 echo; echo "Compiling matic-contracts..."
 npm run truffle:compile
 
-echo; echo "Generating validator set..."
+echo; echo "Copying the list of validators..."
 cd /opt/genesis-contracts || exit
 cp "{{.VAlIDATOR_KEYS_PATH}}"/validators.js /opt/genesis-contracts/validators.js
-node generate-borvalidatorset.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"
 cat /opt/genesis-contracts/validators.js
+
+echo; echo "Generating validator set contract..."
+node generate-borvalidatorset.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"
 
 echo; echo "Generating genesis file..."
 node generate-genesis.js --bor-chain-id "{{.BOR_CHAIN_ID}}" --heimdall-chain-id "{{.HEIMDALL_CHAIN_ID}}"

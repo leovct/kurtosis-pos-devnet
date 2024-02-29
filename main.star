@@ -9,39 +9,43 @@ validator_keys_generator_module = import_module(
 
 def run(plan, validator_count, mnemonic, rootchain):
     # Generate validator keys.
-    # TODO: Remove most of the logic from the script and only generate keys.json with polycli.
-    plan.print("validator_count: {}, mnemonic: {}".format(validator_count, mnemonic))
+    plan.print(
+        "Generating keys for {} validators using menmonic: {}".format(
+            validator_count, mnemonic
+        )
+    )
     keys_artifact = validator_keys_generator_module.run(plan, validator_count, mnemonic)
     validator_keys = validator_keys_generator_module.get_validator_keys(
         plan, validator_count
     )
-    plan.print("validator_keys: {}".format(validator_keys))
+    plan.print("Keys generated: {}".format(validator_keys))
 
-    # Start the rootchain.
-    # TODO: Add an option to deploy the rootchain or or simply specify the url.
-    # If the rootchain needs to be deployed, also deploy pos contracts on it.
+    # Start the rootchain if `rootchain_rpc_url` has not been specified.
     rootchain_rpc_url = ""
     if "rpc_url" in rootchain:
-        plan.print("No need to deploy a custom root chain")
         rootchain_rpc_url = rootchain["rpc_url"]
+        plan.print("Using {} as rootchain RPC URL".format(rootchain_rpc_url))
     else:
-        plan.print("Deploying a custom root chain")
-        plan.print("rootchain: {}".format(rootchain))
+        plan.print(
+            "Deploying a custom root chain with parameters: {}".format(rootchain)
+        )
+        # TODO: Remove harcoded BOR_CHAIN_ID value.
         rootchain_rpc_url = rootchain_module.run(
             plan, validator_count, rootchain, mnemonic, "137", validator_keys
-        )  # TODO: Remove harcoded BOR_CHAIN_ID value.
-    plan.print("rootchain_rpc_url: {}".format(rootchain_rpc_url))
+        )
+        plan.print("Custom rootchain RPC URL: {}".format(rootchain_rpc_url))
 
     # Generate bor genesis.
+    plan.print("Generating bor genesis")
     bor_genesis = bor_module.generate_bor_genesis(plan, keys_artifact)
 
     # Start a number of heimdall and bor nodes.
+    plan.print("Starting nodes")
     heimdall_nodes_ip_addresses = {}
     bor_nodes_ip_addresses = {}
     heimdall_static_peers = []
     bor_static_nodes = []
     for id in range(validator_count):
-        # Get a few values.
         validator_eth_address = validator_keys[id]["eth_address"]
         validator_private_key = validator_keys[id]["private_key"]
         validator_bor_p2p_public_key = validator_keys[id]["bor_p2p_public_key"]

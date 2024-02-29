@@ -16,7 +16,7 @@ def run(plan, id, validator_address, heimdall_node_ip_address, bor_genesis):
 # Start the Bor node.
 def _start_node(plan, id, config, genesis):
     service = plan.add_service(
-        name="bor-{}".format(id + 1),
+        name="bor-{}".format(id),
         config=ServiceConfig(
             image=IMAGE,
             ports={
@@ -27,7 +27,9 @@ def _start_node(plan, id, config, genesis):
                 "{}/config".format(DATA_PATH): config,
                 "{}/genesis".format(DATA_PATH): genesis,
             },
-            cmd=["server", "--config={}/config/config.toml".format(DATA_PATH)],
+            entrypoint=["/bin/sh", "-c"],
+            cmd=["sleep infinity"],
+            # cmd=["server", "--config={}/config/config.toml".format(DATA_PATH)],
         ),
     )
     return service.ip_address
@@ -38,7 +40,7 @@ def _generate_config(plan, id, validator_address, heimdall_node_ip_address):
     config_template = read_file("./config/config.toml")
     pass_template = read_file("./config/pass.txt")
     return plan.render_templates(
-        name="bor-{}-config".format(id + 1),
+        name="bor-{}-config".format(id),
         config={
             "config.toml": struct(
                 template=config_template,
@@ -106,7 +108,7 @@ def generate_bor_genesis(plan, keys_artifact):
 # Thus, we retrieve those addresses and update the configuration files accordingly.
 def update_config_and_restart(plan, id, bor_static_peers):
     _replace_static_nodes_in_config(plan, id, bor_static_peers)
-    service_utils.restart_service(plan, "bor-{}".format(id + 1))
+    service_utils.restart_service(plan, "bor-{}".format(id))
 
 
 # Replace the `static-nodes` placeholder in configuration.
@@ -114,7 +116,7 @@ def _replace_static_nodes_in_config(plan, id, static_nodes):
     expression = "s/static-nodes = \\[\\]/static-nodes = {}]/".format(static_nodes)
     service_utils.sed_file_in_service(
         plan,
-        "bor-{}".format(id + 1),
+        "bor-{}".format(id),
         expression,
         "{}/config/config.toml".format(DATA_PATH),
     )
