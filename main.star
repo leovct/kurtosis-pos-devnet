@@ -12,16 +12,25 @@ def run(plan, validator_count, mnemonic, rootchain):
     # TODO: Remove most of the logic from the script and only generate keys.json with polycli.
     plan.print("validator_count: {}, mnemonic: {}".format(validator_count, mnemonic))
     keys_artifact = validator_keys_generator_module.run(plan, validator_count, mnemonic)
-    validator_keys = validator_keys_generator_module.get_validator_keys(plan, validator_count)
+    validator_keys = validator_keys_generator_module.get_validator_keys(
+        plan, validator_count
+    )
     plan.print("validator_keys: {}".format(validator_keys))
 
     # Start the rootchain.
     # TODO: Add an option to deploy the rootchain or or simply specify the url.
     # If the rootchain needs to be deployed, also deploy pos contracts on it.
-    plan.print("rootchain: {}".format(rootchain))
-    rootchain_rpc_url = rootchain_module.run(
-        plan, validator_count, rootchain, mnemonic, "137", validator_keys
-    )  # TODO: Remove harcoded BOR_CHAIN_ID value.
+    rootchain_rpc_url = ""
+    if "rpc_url" in rootchain:
+        plan.print("No need to deploy a custom root chain")
+        rootchain_rpc_url = rootchain["rpc_url"]
+    else:
+        plan.print("Deploying a custom root chain")
+        plan.print("rootchain: {}".format(rootchain))
+        rootchain_rpc_url = rootchain_module.run(
+            plan, validator_count, rootchain, mnemonic, "137", validator_keys
+        )  # TODO: Remove harcoded BOR_CHAIN_ID value.
+    plan.print("rootchain_rpc_url: {}".format(rootchain_rpc_url))
 
     # Generate bor genesis.
     bor_genesis = bor_module.generate_bor_genesis(plan, keys_artifact)

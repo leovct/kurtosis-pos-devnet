@@ -13,6 +13,11 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        directory:
+          - config_with_custom_rootchain.yml
+          - config_with_rootchain_rpc_url.yml
     steps:
       - uses: actions/checkout@v4
       - name: Install kurtosis
@@ -25,4 +30,4 @@ jobs:
         uses: kurtosis-tech/kurtosis-github-action@v1
         with:
           path: .
-          args: config.yml
+          args: config/${{ matrix.directory }}

@@ -69,7 +69,7 @@ def generate_bor_genesis(plan, keys_artifact):
                     "BOR_CHAIN_ID": BOR_CHAIN_ID,
                     "HEIMDALL_CHAIN_ID": HEIMDALL_CHAIN_ID,  # TODO: Remove harcoded value.
                     "GENESIS_FOLDER": genesis_folder,
-                    "VAlIDATOR_KEYS_PATH": "/var/lib/keys", # TODO: remove hardcoded value
+                    "VAlIDATOR_KEYS_PATH": "/var/lib/keys",  # TODO: remove hardcoded value
                 },
             )
         },
@@ -87,7 +87,7 @@ def generate_bor_genesis(plan, keys_artifact):
             ),
             files={
                 "/opt/scripts": genesis_script,
-                "/var/lib/keys": keys_artifact, # TODO: Fix genesis issue.
+                "/var/lib/keys": keys_artifact,  # TODO: Fix genesis issue.
             },
             entrypoint=["/bin/sh", "-c"],
             cmd=[execute_script_cmd],

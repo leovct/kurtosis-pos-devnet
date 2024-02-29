@@ -23,9 +23,7 @@ def _start_validator_keys_generator(plan, validator_count, mnemonic):
         ),
     )
     return plan.store_service_files(
-        service_name=SERVICE_NAME,
-        src="{}/*".format(DATA_PATH),
-        name="validator-keys"
+        service_name=SERVICE_NAME, src="{}/*".format(DATA_PATH), name="validator-keys"
     )
 
 
