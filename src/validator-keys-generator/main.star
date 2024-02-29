@@ -1,7 +1,7 @@
 service_utils = import_module("../utils/service.star")
 
 SERVICE_NAME = "validator-keys-generator"
-DATA_PATH = "/var/lib/keys"
+DATA_PATH = "/etc/keys"
 
 
 def run(plan, validator_count, mnemonic):

@@ -25,7 +25,7 @@ def _start_node(plan, id, config, keystore, genesis):
             ports={"http_rpc": PortSpec(8545, application_protocol="http")},
             files={
                 "{}/config".format(DATA_PATH): config,
-                "/opt/keys".format(
+                "/etc/keys".format(
                     DATA_PATH
                 ): keystore,  # TODO: Update this way of doing.
                 "{}/genesis".format(DATA_PATH): genesis,
@@ -72,7 +72,7 @@ def generate_bor_genesis(plan, keys_artifact):
                     "BOR_CHAIN_ID": BOR_CHAIN_ID,
                     "HEIMDALL_CHAIN_ID": HEIMDALL_CHAIN_ID,  # TODO: Remove harcoded value.
                     "GENESIS_FOLDER": genesis_folder,
-                    "VAlIDATOR_KEYS_PATH": "/var/lib/keys",  # TODO: remove hardcoded value
+                    "VAlIDATOR_KEYS_PATH": "/etc/keys",  # TODO: remove hardcoded value
                 },
             )
         },
@@ -90,7 +90,7 @@ def generate_bor_genesis(plan, keys_artifact):
             ),
             files={
                 "/opt/scripts": genesis_script,
-                "/var/lib/keys": keys_artifact,  # TODO: Fix genesis issue.
+                "/etc/keys": keys_artifact,  # TODO: Fix genesis issue.
             },
             entrypoint=["/bin/sh", "-c"],
             cmd=[execute_script_cmd],
