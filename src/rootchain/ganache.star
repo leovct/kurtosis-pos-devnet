@@ -24,7 +24,8 @@ def run(
         bor_chain_id,
         validator_keys,
     )
-    _start_rootchain(plan, validator_count, rootchain_params, mnemonic, rootchain_db)
+    rootchain_rpc_url = _start_rootchain(plan, validator_count, rootchain_params, mnemonic, rootchain_db)
+    return rootchain_rpc_url
 
 
 # Start the rootchain contract deployer.
