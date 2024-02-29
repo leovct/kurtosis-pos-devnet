@@ -7,26 +7,20 @@ CHAIN_ID = "heimdall-137"
 DATA_PATH = "/root/.heimdalld"
 
 
+# Configure and start a Heimdall node alongside its RabbitMQ service.
 def run(plan, id, validator_private_key, rootchain_rpc_url):
-    """
-    Configure and start a Heimdall node alongside its RabbitMQ service.
-
-    Args:
-        id (string): The unique identifier for the node.
-        validator_private_key (string): The private key of the validator node.
-        rootchain_rpc_url (string): The rootchain RPC URL.
-
-    Returns:
-        The IP address of the heimdall node.
-    """
     rabbitmq_amqp_url = rabbitmq.start(plan, id)
-    config = generate_config(plan, id, rootchain_rpc_url, rabbitmq_amqp_url)
-    heimdall_ip_address = start_heimdall_node(plan, id, config, rabbitmq_amqp_url)
-    generate_genesis(plan, id, validator_private_key)
+    heimdall_config = _generate_heimdall_config(
+        plan, id, rootchain_rpc_url, rabbitmq_amqp_url
+    )
+    heimdall_ip_address = _start_heimdall_node(
+        plan, id, heimdall_config, rabbitmq_amqp_url
+    )
+    _generate_heimdall_genesis(plan, id, validator_private_key)
     return heimdall_ip_address
 
 
-def start_heimdall_node(plan, id, config, rabbitmq_amq_url):
+def _start_heimdall_node(plan, id, config, rabbitmq_amq_url):
     service = plan.add_service(
         name="heimdall-{}".format(id),
         config=ServiceConfig(
@@ -43,15 +37,8 @@ def start_heimdall_node(plan, id, config, rabbitmq_amq_url):
     return service.ip_address
 
 
-def generate_config(plan, id, rootchain_rpc_url, rabbitmq_amqp_url):
-    """
-    Generate configuration files for a Heimdall validator node.
-
-    Args:
-        id (string): The unique identifier for the node.
-        rootchain_rpc_url (string): The RPC URL of the root chain.
-        rabbitmq_amqp_url (string): The AMQP URL of the associated RabbitMQ service.
-    """
+# Generate Heimdall configuration files.
+def _generate_heimdall_config(plan, id, rootchain_rpc_url, rabbitmq_amqp_url):
     app_template = read_file("./config/app.toml")
     base_config_template = read_file("./config/config.toml")
     heimdall_config_template = read_file("./config/heimdall-config.toml")
@@ -79,7 +66,8 @@ def generate_config(plan, id, rootchain_rpc_url, rabbitmq_amqp_url):
     )
 
 
-def generate_genesis(plan, id, validator_private_key):
+# Generate Heimdall genesis file.
+def _generate_heimdall_genesis(plan, id, validator_private_key):
     commands = [
         {
             "description": "Generate dummy configuration files (including genesis)",
@@ -104,14 +92,16 @@ def generate_genesis(plan, id, validator_private_key):
         plan.exec(service_name="heimdall-{}".format(id), recipe=exec_recipe)
 
 
-def replace_bor_rpc_url_in_config(plan, id, bor_node_ip_address):
-    """
-    Replace the dummy Bor rpc URL in Heimdall config.
+# Update addresses in Heimdall configuration files.
+# Note: Instead of harcoding addresses, they are randomly generated once services are started.
+# Thus, we retrieve those addresses and update the configuration files accordingly.
+def update_addresses_in_config(plan, id, bor_node_ip_address, heimdall_static_peers):
+    _replace_bor_rpc_url_in_config(plan, id, bor_node_ip_address)
+    _replace_static_peers_in_config(plan, id, heimdall_static_peers)
 
-    Args:
-        id (string): The unique identifier for the node.
-        bor_node_ip_address (string): The ip address of the associated Bor node.
-    """
+
+# Replace the `bor_rpc_url` placeholder in Heimdall config.
+def _replace_bor_rpc_url_in_config(plan, id, bor_node_ip_address):
     expression = 's/bor_rpc_url = "http:\\/\\/bor_rpc_url:8545"/bor_rpc_url = "http:\\/\\/{}:8545"/'.format(
         bor_node_ip_address
     )
@@ -123,9 +113,10 @@ def replace_bor_rpc_url_in_config(plan, id, bor_node_ip_address):
     )
 
 
-def replace_static_peers_in_config(plan, id, static_peers):
+# Replace the `persistent_peers` placeholder in Heimdall config.
+def _replace_static_peers_in_config(plan, id, heimdall_static_peers):
     expression = 's/persistent_peers = ""/persistent_peers = "{}"/'.format(
-        static_peers
+        heimdall_static_peers
     ).replace("http://", "http:\\/\\/")
     service_utils.sed_file_in_service(
         plan,
