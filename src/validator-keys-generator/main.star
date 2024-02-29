@@ -35,11 +35,13 @@ def get_validator_keys(plan, validator_count):
     for id in range(validator_count):
         eth_address = _extract_validator_key(plan, id, "ETHAddress")
         public_key = _extract_validator_key(plan, id, "HexPublicKey")
+        full_public_key = _extract_validator_key(plan, id, "HexFullPublicKey")
         private_key = _extract_validator_key(plan, id, "HexPrivateKey")
         bor_p2p_public_key = _extract_p2p_node_key(plan, id, "PublicKey")
         keys[id] = {
             "eth_address": eth_address,
             "public_key": public_key,
+            "full_public_key": full_public_key,
             "private_key": private_key,
             "bor_p2p_public_key": bor_p2p_public_key,
         }

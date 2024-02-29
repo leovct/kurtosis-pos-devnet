@@ -84,13 +84,15 @@ def _start_rootchain_contract_deployer(
     # Stake for each validator node.
     for id in range(validator_count):
         validator_eth_address = validator_keys[id]["eth_address"]
-        validator_public_key = validator_keys[id]["public_key"]
-        command = {
-            "description": "Staking for node {}".format(id),
-            "expression": "npm run truffle exec scripts/stake.js -- --network development {} {} {} {}".format(
-                validator_eth_address, validator_public_key, STAKE_AMOUNT, FEE_TOPUP
-            ),
-        }
+        validator_public_key = "0x{}".format(validator_keys[id]["full_public_key"])
+        cmd = "npm run truffle exec scripts/stake.js -- --network development {} {} {} {}".format(
+            validator_eth_address, validator_public_key, STAKE_AMOUNT, FEE_TOPUP
+        )
+        plan.print("Staking on L1 for validator {}".format(id))
+        exec_recipe = ExecRecipe(command=["/bin/sh", "-c", cmd])
+        plan.exec(
+            service_name=ROOTCHAIN_CONTRACT_DEPLOYER_SERVICE_NAME, recipe=exec_recipe
+        )
 
     # Store the db state.
     rootchain_db = plan.store_service_files(
@@ -98,7 +100,7 @@ def _start_rootchain_contract_deployer(
         src="{}/*".format(DATA_PATH),
         name="rootchain-db",
     )
-    # plan.remove_service(ROOTCHAIN_CONTRACT_DEPLOYER_SERVICE_NAME)
+    plan.remove_service(ROOTCHAIN_CONTRACT_DEPLOYER_SERVICE_NAME)
     return rootchain_db
 
 

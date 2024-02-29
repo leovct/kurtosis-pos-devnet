@@ -55,5 +55,4 @@ a939df5ca331   heimdall-2                    tendermint_p2p: 26656/tcp -> tcp://
 19687d2f6c60   rabbitmq-2                    amqp: 5672/tcp -> amqp://127.0.0.1:58381             RUNNING
 7c975c4c5798   rabbitmq-3                    amqp: 5672/tcp -> amqp://127.0.0.1:58400             RUNNING
 89f8b6addaeb   rootchain                     http_rpc: 8545/tcp -> http://127.0.0.1:58315         RUNNING
-448b68b49e78   rootchain-contract-deployer   http_rpc: 9545/tcp -> http://127.0.0.1:58125         RUNNING
 ```
