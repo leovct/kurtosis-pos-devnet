@@ -22,9 +22,12 @@ def _start_validator_keys_generator(plan, validator_count, mnemonic):
             ready_conditions=ready_condition,
         ),
     )
-    return plan.store_service_files(
+    artifact = plan.store_service_files(
         service_name=SERVICE_NAME, src="{}/*".format(DATA_PATH), name="validator-keys"
     )
+    validator_keys = get_validator_keys(plan, validator_count)
+    plan.remove_service(SERVICE_NAME)
+    return artifact, validator_keys
 
 
 def get_validator_keys(plan, validator_count):

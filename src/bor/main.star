@@ -8,7 +8,9 @@ DATA_PATH = "/etc/bor"
 
 
 # Configure and start a Bor node.
-def run(plan, id, validator_address, heimdall_node_ip_address, bor_keystore, bor_genesis):
+def run(
+    plan, id, validator_address, heimdall_node_ip_address, bor_keystore, bor_genesis
+):
     bor_config = _generate_config(plan, id, validator_address, heimdall_node_ip_address)
     bor_ip_address = _start_node(plan, id, bor_config, bor_keystore, bor_genesis)
 
@@ -19,12 +21,12 @@ def _start_node(plan, id, config, keystore, genesis):
         name="bor-{}".format(id),
         config=ServiceConfig(
             image=IMAGE,
-            ports={
-                "http_rpc": PortSpec(8545, application_protocol="http")
-            },
+            ports={"http_rpc": PortSpec(8545, application_protocol="http")},
             files={
                 "{}/config".format(DATA_PATH): config,
-                "/opt/keys".format(DATA_PATH): keystore, # TODO: Update this way of doing.
+                "/opt/keys".format(
+                    DATA_PATH
+                ): keystore,  # TODO: Update this way of doing.
                 "{}/genesis".format(DATA_PATH): genesis,
             },
             cmd=["server", "--config={}/config/config.toml".format(DATA_PATH)],
@@ -94,11 +96,13 @@ def generate_bor_genesis(plan, keys_artifact):
             ready_conditions=ready_condition,
         ),
     )
-    return plan.store_service_files(
+    artifact = plan.store_service_files(
         service_name=genesis_generator_service_name,
         src="{}/*".format(genesis_folder),
         name="bor-genesis",
     )
+    plan.remove_service(genesis_generator_service_name)
+    return artifact
 
 
 # Update addresses in configuration files and restart the Bor node.

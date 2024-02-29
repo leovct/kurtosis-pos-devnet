@@ -14,9 +14,8 @@ def run(plan, validator_count, mnemonic, rootchain_rpc_url="", rootchain={}):
             validator_count, mnemonic
         )
     )
-    keys_artifact = validator_keys_generator_module.run(plan, validator_count, mnemonic)
-    validator_keys = validator_keys_generator_module.get_validator_keys(
-        plan, validator_count
+    keys_artifact, validator_keys = validator_keys_generator_module.run(
+        plan, validator_count, mnemonic
     )
     plan.print("Keys generated: {}".format(validator_keys))
 
@@ -74,7 +73,9 @@ def run(plan, validator_count, mnemonic, rootchain_rpc_url="", rootchain={}):
 
     for id in range(validator_count):
         # Adjust the config given the randomly generated ip addresses.
-        heimdall_static_peers_updated = heimdall_static_peers[:id] + heimdall_static_peers[id + 1:]
+        heimdall_static_peers_updated = (
+            heimdall_static_peers[:id] + heimdall_static_peers[id + 1 :]
+        )
         heimdall_static_peers_string = ",".join(heimdall_static_peers_updated)
 
         bor_node_ip_address = bor_nodes_ip_addresses[id]
