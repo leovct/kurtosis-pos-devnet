@@ -5,6 +5,7 @@ IMAGE = "0xpolygon/heimdall:1.0.3"
 CHAIN_ID = "heimdall-137"
 DATA_PATH = "/var/lib/heimdall"
 
+
 # Configure and start a Heimdall node alongside its RabbitMQ service.
 def run(plan, id, validator_private_key, rootchain_rpc_url):
     rabbitmq_amqp_url = rabbitmq.start(plan, id)
