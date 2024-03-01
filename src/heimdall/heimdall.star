@@ -3,7 +3,7 @@ service_utils = import_module("../utils/service.star")
 
 IMAGE = "0xpolygon/heimdall:1.0.3"
 CHAIN_ID = "heimdall-137"
-DATA_PATH = "/var/lib/heimdall"
+DATA_PATH = "/etc/heimdall"
 
 
 # Configure and start a Heimdall node alongside its RabbitMQ service.
