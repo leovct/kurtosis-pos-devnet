@@ -13,4 +13,4 @@ RUN apt-get --yes update \
     && apt-get install --yes --no-install-recommends jq=1.6-2.1 \
     && rm -rf /var/lib/apt/lists/*
 COPY generate-keys.sh /usr/local/bin/
-CMD ["sh", "-c", "generate-key.sh"]
+CMD ["sh", "-c", "generate-keys.sh"]
