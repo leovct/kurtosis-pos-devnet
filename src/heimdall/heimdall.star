@@ -78,7 +78,7 @@ def _generate_genesis(plan, id, validator_private_key):
         },
         {
             "description": "Formatting the validator private key",
-            "expression": "heimdallcli generate-validatorkey --home {} {}".format(
+            "expression": "cd {0} && heimdallcli generate-validatorkey --home {0} {1}".format(
                 DATA_PATH, validator_private_key
             ),
         },
