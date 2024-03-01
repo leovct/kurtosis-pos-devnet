@@ -23,7 +23,7 @@ def generate_validators(validator_count, validator_keys):
             "pubKey": "0x04{}".format(hex_full_public_key),
             "signer": eth_address,
             "last_updated": "",
-            "jailed": False,  # TODO: This might need a post-process to replace False by false :)
+            "jailed": json.encode(False), # TODO: Remove quotes?
             "accum": "0",
         }
         validators.append(validator)
@@ -49,7 +49,7 @@ def generate_accounts(validator_count, validator_keys):
             "sequence_number": "0",
             "account_number": "0",
             "module_name": "",
-            "module_permissions": None,  # TODO: replace by null in sed.
+            "module_permissions": json.encode(None),  # TODO: Remove quotes?
         }
         accounts.append(account)
     return accounts
