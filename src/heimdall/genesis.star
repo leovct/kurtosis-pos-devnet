@@ -23,7 +23,7 @@ def generate_validators(validator_count, validator_keys):
             "pubKey": "0x04{}".format(hex_full_public_key),
             "signer": eth_address,
             "last_updated": "",
-            "jailed": json.encode(False), # TODO: Remove quotes?
+            "jailed": json.encode(False),  # TODO: Remove quotes?
             "accum": "0",
         }
         validators.append(validator)
