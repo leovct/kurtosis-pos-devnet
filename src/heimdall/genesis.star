@@ -41,7 +41,7 @@ def generate_dividend(validator_count, validator_keys):
 
 def generate_accounts(validator_count, validator_keys):
     accounts = []
-    for user in users:
+    for id in range(validator_count):
         eth_address = validator_keys[id]["eth_address"]
         account = {
             "address": eth_address,
