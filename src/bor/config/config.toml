@@ -32,7 +32,7 @@ devfakeauthor = false
   nodiscover = false
   nat = "any"
   netrestrict = ""
-  nodekey = ""
+  nodekey = "/etc/keys/validator_{{.NODE_ID}}/nodekey.key"
   nodekeyhex = ""
   txarrivalwait = "500ms"
   [p2p.discovery]

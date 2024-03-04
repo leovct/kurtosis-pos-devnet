@@ -18,7 +18,7 @@ for i in $(seq 0 $((VALIDATOR_COUNT - 1))); do
 
   # Generate bor node p2p key.
   polycli nodekey | jq > "$DATA_PATH/validator_$i/nodekey.json"
-  # TODO: Store nodekey for bor! - There may be issues when trying to sign atm
+  jq -r ".PrivateKey" "$DATA_PATH/validator_$i/nodekey.json" > "$DATA_PATH/validator_$i/nodekey.key"
   echo; echo "Bor node key created for validator #$i!"
   cat "$DATA_PATH/validator_$i/nodekey.json"
 done
